@@ -9,15 +9,12 @@ import {
     CircleCheck,
     CloudSun,
     FileText,
-    Info,
     Leaf,
     ListChecks,
-    Map,
     NotebookPen,
     PackageOpen,
     ShieldCheck,
     Sprout,
-    TriangleAlert,
     UserRoundCheck,
     createIcons,
 } from 'lucide';
@@ -34,15 +31,12 @@ createIcons({
         CircleCheck,
         CloudSun,
         FileText,
-        Info,
         Leaf,
         ListChecks,
-        Map,
         NotebookPen,
         PackageOpen,
         ShieldCheck,
         Sprout,
-        TriangleAlert,
         UserRoundCheck,
     },
 });
@@ -80,7 +74,7 @@ if (billingSwitch) {
                 node.textContent = '0 ₽';
                 node.dataset.empty = 'false';
                 if (periodNode) {
-                    periodNode.textContent = 'без ограничения по времени';
+                    periodNode.textContent = 'бесплатно';
                 }
                 return;
             }
@@ -94,10 +88,10 @@ if (billingSwitch) {
                 return;
             }
 
-            node.textContent = 'Цена настраивается';
+            node.textContent = '—';
             node.dataset.empty = 'true';
             if (periodNode) {
-                periodNode.textContent = 'будет указана до запуска оплат';
+                periodNode.textContent = '';
             }
         });
     };
