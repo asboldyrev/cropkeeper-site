@@ -30,7 +30,8 @@ class AppServiceProvider extends ServiceProvider
                 'hasSellerIdentity' => filled($seller['name'] ?? null)
                     || filled($seller['status'] ?? null)
                     || filled($seller['inn'] ?? null)
-                    || filled($seller['ogrn'] ?? null),
+                    || filled($seller['ogrn'] ?? null)
+                    || filled($seller['address'] ?? null),
             ]);
         });
     }
