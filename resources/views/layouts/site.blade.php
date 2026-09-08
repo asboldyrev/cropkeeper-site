@@ -10,6 +10,16 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+    @php
+        $seller = config('landing.seller', []);
+        $hasSellerDetails = collect($seller)->contains(fn ($value) => filled($value));
+        $hasContactDetails = filled($seller['email'] ?? null) || filled($seller['phone'] ?? null);
+        $hasSellerIdentity = filled($seller['name'] ?? null)
+            || filled($seller['status'] ?? null)
+            || filled($seller['inn'] ?? null)
+            || filled($seller['ogrn'] ?? null);
+    @endphp
+
     <a class="skip-link" href="#main">Перейти к содержанию</a>
 
     <header class="site-header" data-header>
@@ -25,7 +35,9 @@
                 <a href="{{ route('home') }}#possibilities">Возможности</a>
                 <a href="{{ route('home') }}#plans">Тарифы</a>
                 <a href="{{ route('home') }}#roadmap">Роадмап</a>
-                <a href="{{ route('home') }}#contacts">Контакты</a>
+                @if ($hasSellerDetails)
+                    <a href="{{ route('home') }}#contacts">Контакты</a>
+                @endif
             </nav>
 
             <a class="button button--small button--ghost" href="{{ config('landing.app_url') }}">
@@ -58,23 +70,39 @@
                 </div>
             </div>
 
-            <div>
-                <p class="footer-label">Связь</p>
-                <div class="footer-links footer-links--plain">
-                    <span>{{ config('landing.seller.email') }}</span>
-                    <span>{{ config('landing.seller.phone') }}</span>
+            @if ($hasContactDetails)
+                <div>
+                    <p class="footer-label">Связь</p>
+                    <div class="footer-links footer-links--plain">
+                        @if (filled($seller['email'] ?? null))
+                            <span>{{ $seller['email'] }}</span>
+                        @endif
+                        @if (filled($seller['phone'] ?? null))
+                            <span>{{ $seller['phone'] }}</span>
+                        @endif
+                    </div>
                 </div>
-            </div>
+            @endif
 
-            <div>
-                <p class="footer-label">Продавец</p>
-                <div class="footer-links footer-links--plain">
-                    <span>{{ config('landing.seller.name') }}</span>
-                    <span>{{ config('landing.seller.status') }}</span>
-                    <span>ИНН: {{ config('landing.seller.inn') }}</span>
-                    <span>{{ config('landing.seller.ogrn') }}</span>
+            @if ($hasSellerIdentity)
+                <div>
+                    <p class="footer-label">Продавец</p>
+                    <div class="footer-links footer-links--plain">
+                        @if (filled($seller['name'] ?? null))
+                            <span>{{ $seller['name'] }}</span>
+                        @endif
+                        @if (filled($seller['status'] ?? null))
+                            <span>{{ $seller['status'] }}</span>
+                        @endif
+                        @if (filled($seller['inn'] ?? null))
+                            <span>ИНН: {{ $seller['inn'] }}</span>
+                        @endif
+                        @if (filled($seller['ogrn'] ?? null))
+                            <span>{{ $seller['ogrn'] }}</span>
+                        @endif
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
 
         <div class="shell site-footer__bottom">
