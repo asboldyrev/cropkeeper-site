@@ -271,22 +271,38 @@
         </div>
     </section>
 
-    <section class="section seller-section" aria-labelledby="seller-heading">
-        <div class="shell seller-card">
-            <div>
-                <p class="eyebrow"><span></span> Контакты и реквизиты</p>
-                <h2 id="seller-heading">Связаться с Cropkeeper</h2>
-                <p>По вопросам работы сервиса, оплаты и доступа используйте указанные ниже контакты.</p>
+    @if ($hasSellerDetails)
+        <section class="section seller-section" aria-labelledby="seller-heading">
+            <div class="shell seller-card">
+                <div>
+                    <p class="eyebrow"><span></span> Контакты и реквизиты</p>
+                    <h2 id="seller-heading">Связаться с Cropkeeper</h2>
+                    <p>По вопросам работы сервиса, оплаты и доступа используйте указанные ниже контакты.</p>
+                </div>
+                <dl class="seller-details">
+                    @if (filled($seller['email'] ?? null))
+                        <div><dt>Email</dt><dd>{{ $seller['email'] }}</dd></div>
+                    @endif
+                    @if (filled($seller['phone'] ?? null))
+                        <div><dt>Телефон</dt><dd>{{ $seller['phone'] }}</dd></div>
+                    @endif
+                    @if (filled($seller['name'] ?? null))
+                        <div><dt>Продавец</dt><dd>{{ $seller['name'] }}</dd></div>
+                    @endif
+                    @if (filled($seller['status'] ?? null))
+                        <div><dt>Статус</dt><dd>{{ $seller['status'] }}</dd></div>
+                    @endif
+                    @if (filled($seller['inn'] ?? null))
+                        <div><dt>ИНН</dt><dd>{{ $seller['inn'] }}</dd></div>
+                    @endif
+                    @if (filled($seller['ogrn'] ?? null))
+                        <div><dt>ОГРНИП / ОГРН</dt><dd>{{ $seller['ogrn'] }}</dd></div>
+                    @endif
+                    @if (filled($seller['address'] ?? null))
+                        <div class="seller-details__wide"><dt>Адрес</dt><dd>{{ $seller['address'] }}</dd></div>
+                    @endif
+                </dl>
             </div>
-            <dl class="seller-details">
-                <div><dt>Email</dt><dd>{{ config('landing.seller.email') }}</dd></div>
-                <div><dt>Телефон</dt><dd>{{ config('landing.seller.phone') }}</dd></div>
-                <div><dt>Продавец</dt><dd>{{ config('landing.seller.name') }}</dd></div>
-                <div><dt>Статус</dt><dd>{{ config('landing.seller.status') }}</dd></div>
-                <div><dt>ИНН</dt><dd>{{ config('landing.seller.inn') }}</dd></div>
-                <div><dt>ОГРНИП / ОГРН</dt><dd>{{ config('landing.seller.ogrn') }}</dd></div>
-                <div class="seller-details__wide"><dt>Адрес</dt><dd>{{ config('landing.seller.address') }}</dd></div>
-            </dl>
-        </div>
-    </section>
+        </section>
+    @endif
 @endsection
