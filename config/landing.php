@@ -4,13 +4,13 @@ return [
     'app_url' => env('CROPKEEPER_APP_URL', 'https://app.cropkeeper.me'),
 
     'seller' => [
-        'name' => env('LANDING_SELLER_NAME', '[УКАЖИТЕ ФИО / НАИМЕНОВАНИЕ ПРОДАВЦА]'),
-        'status' => env('LANDING_SELLER_STATUS', '[УКАЖИТЕ СТАТУС: ИП / САМОЗАНЯТЫЙ / ООО]'),
-        'inn' => env('LANDING_SELLER_INN', '[УКАЖИТЕ ИНН]'),
-        'ogrn' => env('LANDING_SELLER_OGRN', '[УКАЖИТЕ ОГРНИП / ОГРН, ЕСЛИ ПРИМЕНИМО]'),
-        'address' => env('LANDING_SELLER_ADDRESS', '[УКАЖИТЕ АДРЕС ДЛЯ ЮРИДИЧЕСКИ ЗНАЧИМЫХ СООБЩЕНИЙ]'),
-        'email' => env('LANDING_CONTACT_EMAIL', '[УКАЖИТЕ EMAIL]'),
-        'phone' => env('LANDING_CONTACT_PHONE', '[УКАЖИТЕ ТЕЛЕФОН]'),
+        'name' => env('LANDING_SELLER_NAME'), // [УКАЖИТЕ ФИО / НАИМЕНОВАНИЕ ПРОДАВЦА]
+        'status' => env('LANDING_SELLER_STATUS'), // [УКАЖИТЕ СТАТУС: ИП / САМОЗАНЯТЫЙ / ООО]
+        'inn' => env('LANDING_SELLER_INN'), // [УКАЖИТЕ ИНН]
+        'ogrn' => env('LANDING_SELLER_OGRN'), // [УКАЖИТЕ ОГРНИП / ОГРН, ЕСЛИ ПРИМЕНИМО]
+        'address' => env('LANDING_SELLER_ADDRESS'), // [УКАЖИТЕ АДРЕС ДЛЯ ЮРИДИЧЕСКИ ЗНАЧИМЫХ СООБЩЕНИЙ]
+        'email' => env('LANDING_CONTACT_EMAIL'), // [УКАЖИТЕ EMAIL]
+        'phone' => env('LANDING_CONTACT_PHONE'), // [УКАЖИТЕ ТЕЛЕФОН]
     ],
 
     'plans' => [
@@ -80,7 +80,7 @@ return [
             'items' => [
                 'Полноценные повторяющиеся задачи для регулярных работ.',
                 'Развитие календаря и сезонного планирования.',
-                'Улучшение мобильного использования и PWA-сценариев.',
+                'Улучшение мобильного использования.',
             ],
         ],
         [
