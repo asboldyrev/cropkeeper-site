@@ -14,7 +14,6 @@ class PublicPagesTest extends TestCase
             ->assertSee('Возможности')
             ->assertSee('Тарифы')
             ->assertSee('Что дальше')
-            ->assertSee('Контакты и реквизиты')
             ->assertSee('Free')
             ->assertSee('Pro')
             ->assertSee('Premium')
@@ -39,6 +38,68 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('На старших тарифах доступны повторяющиеся задачи.')
             ->assertDontSee('Публичный план отражает продуктовые этапы Cropkeeper')
             ->assertDontSee('До подключения production-платежей');
+    }
+
+    public function test_empty_seller_details_are_not_rendered(): void
+    {
+        config()->set('landing.seller', [
+            'name' => null,
+            'status' => null,
+            'inn' => null,
+            'ogrn' => null,
+            'address' => null,
+            'email' => null,
+            'phone' => null,
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee('Связаться с Cropkeeper')
+            ->assertDontSee('footer-label">Связь', false)
+            ->assertDontSee('footer-label">Продавец', false);
+
+        $this->get('/offer')
+            ->assertOk()
+            ->assertDontSee('10. Контакты и реквизиты продавца');
+
+        $this->get('/privacy')
+            ->assertOk()
+            ->assertDontSee('<h2>9. Контакты</h2>', false);
+
+        $this->get('/personal-data')
+            ->assertOk()
+            ->assertDontSee('10. Сведения об операторе');
+    }
+
+    public function test_only_filled_seller_details_are_rendered(): void
+    {
+        config()->set('landing.seller', [
+            'name' => 'ИП Тестовый Продавец',
+            'status' => null,
+            'inn' => null,
+            'ogrn' => null,
+            'address' => null,
+            'email' => 'support@example.test',
+            'phone' => null,
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('ИП Тестовый Продавец')
+            ->assertSee('support@example.test')
+            ->assertDontSee('<dt>Телефон</dt>', false)
+            ->assertDontSee('<dt>ИНН</dt>', false)
+            ->assertDontSee('<dt>ОГРНИП / ОГРН</dt>', false)
+            ->assertDontSee('<dt>Адрес</dt>', false);
+
+        $this->get('/offer')
+            ->assertOk()
+            ->assertSee('ИП Тестовый Продавец')
+            ->assertSee('support@example.test')
+            ->assertDontSee('<dt>Телефон</dt>', false)
+            ->assertDontSee('<dt>ИНН</dt>', false)
+            ->assertDontSee('<dt>ОГРНИП / ОГРН</dt>', false)
+            ->assertDontSee('<dt>Адрес</dt>', false);
     }
 
     public function test_offer_is_public(): void
