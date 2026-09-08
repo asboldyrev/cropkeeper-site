@@ -10,16 +10,6 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-    @php
-        $seller = config('landing.seller', []);
-        $hasSellerDetails = collect($seller)->contains(fn ($value) => filled($value));
-        $hasContactDetails = filled($seller['email'] ?? null) || filled($seller['phone'] ?? null);
-        $hasSellerIdentity = filled($seller['name'] ?? null)
-            || filled($seller['status'] ?? null)
-            || filled($seller['inn'] ?? null)
-            || filled($seller['ogrn'] ?? null);
-    @endphp
-
     <a class="skip-link" href="#main">Перейти к содержанию</a>
 
     <header class="site-header" data-header>
@@ -99,6 +89,9 @@
                         @endif
                         @if (filled($seller['ogrn'] ?? null))
                             <span>{{ $seller['ogrn'] }}</span>
+                        @endif
+                        @if (filled($seller['address'] ?? null))
+                            <span>{{ $seller['address'] }}</span>
                         @endif
                     </div>
                 </div>
