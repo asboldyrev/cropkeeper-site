@@ -3,6 +3,11 @@
 @section('title', 'Публичная оферта — Cropkeeper')
 @section('description', 'Публичная оферта Cropkeeper: условия использования сервиса, оплаты тарифов и продления подписки.')
 
+@php
+    $seller = config('landing.seller', []);
+    $hasSellerDetails = collect($seller)->contains(fn ($value) => filled($value));
+@endphp
+
 @section('content')
 <section class="legal-hero">
     <div class="shell legal-hero__inner">
@@ -25,7 +30,9 @@
             <a href="#refunds">7. Отказ и возвраты</a>
             <a href="#liability">8. Ответственность</a>
             <a href="#term">9. Срок действия</a>
-            <a href="#contacts">10. Реквизиты</a>
+            @if ($hasSellerDetails)
+                <a href="#contacts">10. Реквизиты</a>
+            @endif
         </aside>
 
         <article class="legal-document">
@@ -37,7 +44,7 @@
 
             <section id="service">
                 <h2>2. Предмет договора</h2>
-                <p>Cropkeeper предоставляет Пользователю доступ к программной функциональности для ведения отдельных посадок, коллекции семян, календаря событий, задач и журнала наблюдений. В сервисе также может отображаться погодный контекст для выбранного Пользователем населённого пункта. Конкретный объём доступной функциональности и лимитов зависит от выбранного тарифа.</p>
+                <p>Cropkeeper предоставляет Пользователю доступ к программной функциональности для ведения растений, списков семян, календаря событий, задач и журнала наблюдений. Конкретный объём доступной функциональности и лимитов зависит от выбранного тарифа.</p>
                 <p>Описание действующих тарифов публикуется на странице <a href="{{ route('home') }}#plans">«Тарифы»</a>. Бесплатный тариф предоставляется без оплаты. Платные тарифы предоставляются на оплаченный период.</p>
                 <p>Cropkeeper не оказывает агрономические, медицинские, ветеринарные или иные профессиональные консультационные услуги. Информация внутри сервиса носит вспомогательный характер, а решения по выращиванию Пользователь принимает самостоятельно.</p>
             </section>
@@ -88,18 +95,34 @@
                 <p>Для оплаченного периода применяются условия, действовавшие на момент оформления соответствующей покупки, если новые условия не улучшают положение Пользователя или иное не установлено законом.</p>
             </section>
 
-            <section id="contacts">
-                <h2>10. Контакты и реквизиты продавца</h2>
-                <dl class="legal-details">
-                    <div><dt>Наименование / ФИО</dt><dd>{{ config('landing.seller.name') }}</dd></div>
-                    <div><dt>Статус</dt><dd>{{ config('landing.seller.status') }}</dd></div>
-                    <div><dt>ИНН</dt><dd>{{ config('landing.seller.inn') }}</dd></div>
-                    <div><dt>ОГРНИП / ОГРН</dt><dd>{{ config('landing.seller.ogrn') }}</dd></div>
-                    <div><dt>Адрес</dt><dd>{{ config('landing.seller.address') }}</dd></div>
-                    <div><dt>Email</dt><dd>{{ config('landing.seller.email') }}</dd></div>
-                    <div><dt>Телефон</dt><dd>{{ config('landing.seller.phone') }}</dd></div>
-                </dl>
-            </section>
+            @if ($hasSellerDetails)
+                <section id="contacts">
+                    <h2>10. Контакты и реквизиты продавца</h2>
+                    <dl class="legal-details">
+                        @if (filled($seller['name'] ?? null))
+                            <div><dt>Наименование / ФИО</dt><dd>{{ $seller['name'] }}</dd></div>
+                        @endif
+                        @if (filled($seller['status'] ?? null))
+                            <div><dt>Статус</dt><dd>{{ $seller['status'] }}</dd></div>
+                        @endif
+                        @if (filled($seller['inn'] ?? null))
+                            <div><dt>ИНН</dt><dd>{{ $seller['inn'] }}</dd></div>
+                        @endif
+                        @if (filled($seller['ogrn'] ?? null))
+                            <div><dt>ОГРНИП / ОГРН</dt><dd>{{ $seller['ogrn'] }}</dd></div>
+                        @endif
+                        @if (filled($seller['address'] ?? null))
+                            <div><dt>Адрес</dt><dd>{{ $seller['address'] }}</dd></div>
+                        @endif
+                        @if (filled($seller['email'] ?? null))
+                            <div><dt>Email</dt><dd>{{ $seller['email'] }}</dd></div>
+                        @endif
+                        @if (filled($seller['phone'] ?? null))
+                            <div><dt>Телефон</dt><dd>{{ $seller['phone'] }}</dd></div>
+                        @endif
+                    </dl>
+                </section>
+            @endif
         </article>
     </div>
 </section>
