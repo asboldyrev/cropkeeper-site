@@ -1,58 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Cropkeeper Site
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Public landing for `cropkeeper.me`. The site explains Cropkeeper, publishes tariffs and legal documents, and provides the public information required for production payment-provider onboarding.
 
-## About Laravel
+## Branching
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The repository follows gitflow. Feature work branches from `dev`; do not commit feature changes directly to `dev`.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Current landing work: `feature/payment-provider-landing`.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Stack
 
-## Learning Laravel
+- Laravel 13
+- Blade
+- Tailwind CSS 4 / custom CSS
+- Vite
+- Lucide (`lucide` npm package; no icon CDN)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Local setup
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
+npm install
+npm run build
+composer test
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+For development:
 
-## Contributing
+```bash
+composer dev
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Public pages
 
-## Code of Conduct
+- `/` — landing, current product capabilities, tariffs, roadmap, contacts and seller details
+- `/offer` — public offer
+- `/privacy` — privacy policy
+- `/personal-data` — personal data processing policy
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Landing configuration
 
-## Security Vulnerabilities
+Public content that must be easy to change without editing templates lives in `config/landing.php`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Production-specific values are supplied through `.env`:
 
-## License
+```dotenv
+CROPKEEPER_APP_URL=https://app.cropkeeper.me
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+LANDING_SELLER_NAME="..."
+LANDING_SELLER_STATUS="..."
+LANDING_SELLER_INN="..."
+LANDING_SELLER_OGRN="..."
+LANDING_SELLER_ADDRESS="..."
+LANDING_CONTACT_EMAIL="..."
+LANDING_CONTACT_PHONE="..."
+
+LANDING_PRO_MONTHLY_PRICE="... ₽"
+LANDING_PRO_YEARLY_PRICE="... ₽"
+LANDING_PREMIUM_MONTHLY_PRICE="... ₽"
+LANDING_PREMIUM_YEARLY_PRICE="... ₽"
+```
+
+The tariff matrix itself is intentionally static in the site config for the first release. This keeps the public landing available even if the application API is unavailable and makes merchant onboarding independent from application authentication/CORS. If a public read-only tariff endpoint is introduced later, the source can be replaced without redesigning the page.
+
+## Payment-provider onboarding gate
+
+Before submitting `cropkeeper.me` for review, confirm all of the following:
+
+- the production URL opens publicly without authentication;
+- all placeholder seller/contact values have been replaced;
+- paid tariff prices are real and match the application checkout;
+- the product description reflects only functionality actually offered;
+- `/offer`, `/privacy`, and `/personal-data` open publicly;
+- the offer describes access timing, automatic renewal, cancellation and refunds;
+- seller legal details and contacts are visible in the footer;
+- all purchase-related pages remain on the intended public domain or are clearly linked to the application checkout;
+- there are no development/test labels, sample seller data or fake prices in production.
+
+The legal pages are working launch templates, not a substitute for a final legal review. They must be checked against the actual seller status, infrastructure, payment provider and production data flows before publication.
