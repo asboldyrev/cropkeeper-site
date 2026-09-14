@@ -1,3 +1,5 @@
+import '../css/analytics-consent.css';
+
 import {
     ArrowRight,
     ArrowUpRight,
