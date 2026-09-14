@@ -11,91 +11,59 @@ Status: completed and merged into `dev`.
 Delivered:
 
 - public landing for `cropkeeper.me`;
-- current product description and conservative feature presentation;
+- conservative current-feature presentation;
 - Free / Pro / Premium tariff cards;
-- configurable production seller/contact values and paid prices;
-- responsive public layout;
-- Lucide package integration;
-- public Offer, Privacy Policy and Personal Data Processing Policy baseline;
-- conditional rendering of contact and seller fields;
+- configurable seller/contact values and paid prices;
+- responsive layout and Lucide package integration;
+- conditional seller/contact rendering;
 - public-page feature tests.
 
-## 2. Final legal-document architecture
+## 2. Canonical legal-document architecture
 
-Status: in progress in `feature/legal-document-architecture`.
+Status: completed and merged into `dev`.
 
-This stage must be completed before the remaining production/payment-provider stages.
+Delivered:
 
-Scope:
+- `/agreement`, `/offer`, `/personal-data`, `/cookies` canonical active URLs;
+- `/privacy` permanent redirect to `/personal-data`;
+- `config/legal.php` document/revision registry;
+- public archive indexes and immutable archived revision routes;
+- historical Privacy Policy revision from 2026-09-05 preserved;
+- archive links shown only where a real previous revision exists;
+- canonical legal links in the landing and footer;
+- public User Agreement and user-facing cookies/analytics document;
+- regression tests for canonical pages, archives and redirects.
 
-- add the User Agreement;
-- finalize the Offer / paid-access terms;
-- finalize the Personal Data Processing Policy;
-- define the cookies / Yandex Metrika document or dedicated policy section;
-- introduce explicit document revision identifiers/dates;
-- keep canonical active-document URLs stable;
-- implement public archive indexes and immutable archived revisions;
-- add archive links to every active legal page;
-- make the landing the shared public legal source for both site and application;
-- ensure the Personal Data Policy is informative and is not presented as a contract that must be accepted;
-- include separate consent documents only where consent is actually the legal basis.
+## 3. Final Offer and Personal Data Policy revision
 
-Current implementation checkpoint on the feature branch:
+Status: in progress in `feature/legal-content-revision`.
 
-- canonical `/agreement`, `/offer`, `/personal-data`, `/cookies` routes added;
-- `/privacy` converted to a permanent legacy redirect to `/personal-data`;
-- document/revision registry added in `config/legal.php`;
-- public archive index/revision routes added;
-- superseded Privacy Policy revision dated 2026-09-05 frozen into the archive;
-- User Agreement and cookies/analytics pages added;
-- landing/footer legal navigation switched to canonical active URLs;
-- automated coverage added for version metadata, archives, redirects and missing revisions.
+Current scope:
 
-The Offer and Personal Data Processing Policy still need their next substantive audited revisions before stage 2 can be considered complete.
-
-## 3. Final legal-content synchronization with Cropkeeper behavior
-
-Status: planned immediately after/alongside stage 2.
-
-Scope:
-
-- Free / Pro / Premium;
-- account and web-application rules;
-- user content;
-- paid access without auto-renewal;
-- auto-renewing subscriptions;
-- auto-payment enable/disable/re-purchase rules;
-- warning about loss of an old recurring price after auto-renewal is disabled;
-- current paid-period queue/pause semantics;
-- final proportional-refund rules;
-- new support workflow and support-message retention;
-- account deletion without six-month deactivation;
-- user-data export/import and 48-hour generated-archive lifecycle;
-- optional archive-link email;
-- service mail;
-- locality and approximate coordinates;
-- Open-Meteo;
-- Yandex Metrika;
-- material document changes and re-acceptance/notification rules.
-
-CloudTips, voluntary tips/donations and obsolete Telegram-primary-support wording must be removed from active documents and active public copy. Historical archived revisions must never be rewritten to remove old historical wording.
+- freeze the previously published Offer dated 2026-09-05 into the public archive;
+- freeze the previously published Personal Data Processing Policy dated 2026-09-05 into the public archive;
+- publish new active revisions dated 2026-09-14;
+- align the Offer with access without auto-renewal, auto-renewing subscriptions, queue/pause semantics, disable/re-purchase rules, recurring-charge notices and the final refund model;
+- align the Personal Data Policy with locality/coordinates, Open-Meteo, payment metadata, support, service mail, analytics consent, export/delete flows and retention rules;
+- keep all public legal wording directed to the user, not to the developer;
+- expand automated coverage for active and archived revisions.
 
 ## 4. Consent-gated Yandex Metrika
 
-Status: planned.
+Status: planned after stage 3.
 
 Scope:
 
 - explicit accept/reject choice before Metrika initialization;
 - no implied consent through continued browsing;
-- persistent consent state;
+- persisted consent state;
 - public mechanism to review/change/withdraw the choice;
-- no Metrika initialization on future visits after withdrawal unless consent is granted again;
+- no initialization on future visits after withdrawal unless consent is granted again;
 - Webvisor review;
 - sensitive-field masking review;
 - URL/query-parameter review;
 - verification that email, user content and other unnecessary personal data do not enter analytics;
-- corresponding legal-document wording for data categories, storage technologies, purposes, periods, consent and withdrawal.
+- runtime behavior matching the published Cookies and Personal Data documents.
 
 ## 5. Tariff and subscription-copy finalization
 
@@ -103,12 +71,12 @@ Status: planned.
 
 Scope:
 
-- remove the term `разовая подписка`;
+- remove the term `разовая подписка` if present;
 - distinguish `доступ на 1 месяц без автопродления`, `доступ на 12 месяцев без автопродления`, `ежемесячная подписка с автопродлением`, and `годовая подписка с автопродлением`;
 - show access period and auto-renewal state separately;
-- ensure paid pricing matches the application checkout;
+- reconcile public paid prices with application checkout;
 - publish only functionality actually ready for users;
-- keep internal roadmap/development wording out of tariff sales copy.
+- keep internal development wording out of commercial cards.
 
 ## 6. Canonical legal links and application integration
 
@@ -116,40 +84,38 @@ Status: planned.
 
 Site work:
 
-- use only canonical active-document URLs throughout the site;
-- keep active documents public without authentication;
-- link every legal page to its archive;
+- verify every public legal link uses a canonical active URL;
+- keep active and archived documents accessible without authentication;
 - preserve conditional rendering for seller/contact details.
 
 Cross-repository application work in `asboldyrev/cropkeeper-app`:
 
-- link application legal UI to the same canonical URLs;
-- remove independent stale document copies where present;
-- implement required User Agreement acceptance/re-acceptance;
+- point registration, settings, payment and deletion flows to canonical site documents;
+- remove or stop using stale independent document copies;
+- implement User Agreement acceptance/re-acceptance;
 - implement material Offer-change confirmation before a future charge under changed terms;
-- notify users about material Personal Data Policy changes without treating the policy itself as a contract.
+- notify users about material Personal Data Policy changes without treating the policy as a contract.
 
 ## 7. Cross-repository product/legal behavior gate
 
-Status: planned; application-owned implementation with site documentation dependency.
+Status: planned; application-owned implementation with site-document dependency.
 
-Before final legal publication, freeze or implement the exact behavior for:
+Before public launch, application behavior must match the published documents for:
 
 - auto-renewal default-off and explicit enablement;
-- disablement keeping the paid period active until expiry;
+- disablement retaining the current paid period until expiry;
 - no reuse/re-enable of the same payment binding after disablement;
-- new purchase/payment flow required to start auto-renewal again;
-- old-price-loss warning showing both the current recurring price and the current price of a new subscription;
-- proportional refunds including paused/frozen paid periods;
-- exact paid-time calculation and rounding rules;
-- account deletion behavior;
-- export archive generation, 48-hour TTL, access after account deletion until original expiry, optional email delivery and automatic destruction;
-- archive import on new registration;
+- new purchase/payment flow required for future auto-renewal;
+- old-price-loss warning;
+- recurring-charge notice at least 3 calendar days before charge;
+- proportional refunds and frozen periods;
+- 12-hour current-period threshold and upward kopeck rounding;
+- account deletion;
+- export archive generation, 48-hour TTL, post-deletion access until original expiry, optional email link and automatic destruction;
+- archive import into an otherwise empty account;
 - support workflow and retention;
 - service-email categories;
-- document-change notifications and required confirmations.
-
-The site must not document a behavior as final until the application behavior is frozen or implemented consistently.
+- material document-change notifications and required confirmations.
 
 ## 8. Landing security and privacy acceptance
 
@@ -157,14 +123,13 @@ Status: planned before release.
 
 Verify:
 
-- HTTPS;
-- HSTS ownership/configuration;
+- HTTPS and HSTS ownership/configuration;
 - appropriate cookie attributes;
 - no server secrets in frontend output/build;
 - clear dev/production separation;
 - no real user data in development;
-- analytics consent is respected under first visit, accept, reject, withdrawal and subsequent-visit scenarios;
-- public legal archives cannot be accidentally rewritten by ordinary active-document updates.
+- analytics consent behavior under first visit, accept, reject, withdrawal and later visits;
+- archived legal revisions cannot be accidentally rewritten by ordinary active-document updates.
 
 ## 9. Open-source license acceptance
 
@@ -180,7 +145,7 @@ Scope:
 
 ## 10. Merchant onboarding and production promotion
 
-Status: blocked on stages 2–9.
+Status: blocked on stages 3–9.
 
 After legal/security/license gates are complete:
 
@@ -189,16 +154,16 @@ After legal/security/license gates are complete:
 - deploy the public `cropkeeper.me` candidate;
 - perform final public smoke checks;
 - submit the site for production payment-provider merchant onboarding;
-- coordinate any provider-requested wording changes without weakening the legal-audit requirements;
-- only after acceptance and final verification, promote the approved site release from `dev` to `main`.
+- coordinate provider-requested wording changes without weakening the legal-audit requirements;
+- only after acceptance and final verification, promote the approved release from `dev` to `main`.
 
 ## Post-release maintenance
 
-Legal documents are versioned release artifacts. For every new revision:
+For every new legal revision:
 
 - keep the canonical active URL stable;
-- create a new immutable archived revision before replacing the active content;
+- create an immutable archived revision before replacing active content;
 - preserve the old revision verbatim;
-- update the archive index;
+- update the archive registry;
 - trigger the appropriate application notification/re-acceptance flow when the change is material;
 - never edit an archived revision retroactively.
