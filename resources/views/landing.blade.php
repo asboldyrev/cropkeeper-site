@@ -252,19 +252,24 @@
                 <p>Перед покупкой можно заранее ознакомиться с условиями сервиса, правилами обработки данных и реквизитами продавца.</p>
             </div>
             <div class="trust-links">
-                <a href="{{ route('offer') }}">
+                <a href="{{ route('agreement') }}">
                     <i data-lucide="file-text" aria-hidden="true"></i>
-                    <span><strong>Публичная оферта</strong><small>Условия предоставления доступа и оплаты</small></span>
+                    <span><strong>Пользовательское соглашение</strong><small>Правила использования аккаунта и сервиса</small></span>
                     <i data-lucide="arrow-up-right" aria-hidden="true"></i>
                 </a>
-                <a href="{{ route('privacy') }}">
-                    <i data-lucide="shield-check" aria-hidden="true"></i>
-                    <span><strong>Политика конфиденциальности</strong><small>Как используется информация при работе сервиса</small></span>
+                <a href="{{ route('offer') }}">
+                    <i data-lucide="file-text" aria-hidden="true"></i>
+                    <span><strong>Публичная оферта</strong><small>Условия предоставления платного доступа</small></span>
                     <i data-lucide="arrow-up-right" aria-hidden="true"></i>
                 </a>
                 <a href="{{ route('personal-data') }}">
                     <i data-lucide="user-round-check" aria-hidden="true"></i>
                     <span><strong>Обработка персональных данных</strong><small>Цели, основания и порядок обработки</small></span>
+                    <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+                </a>
+                <a href="{{ route('cookies') }}">
+                    <i data-lucide="shield-check" aria-hidden="true"></i>
+                    <span><strong>Cookies и аналитика</strong><small>Выбор по Яндекс Метрике и техническому хранилищу</small></span>
                     <i data-lucide="arrow-up-right" aria-hidden="true"></i>
                 </a>
             </div>
