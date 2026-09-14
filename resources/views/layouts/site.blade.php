@@ -58,6 +58,9 @@
                     <a href="{{ route('offer') }}">Публичная оферта</a>
                     <a href="{{ route('personal-data') }}">Политика обработки персональных данных</a>
                     <a href="{{ route('cookies') }}">Cookies и аналитика</a>
+                    @if (config('analytics.metrika.enabled'))
+                        <button class="footer-link-button" type="button" data-analytics-settings>Настройки аналитики</button>
+                    @endif
                 </div>
             </div>
 
@@ -104,5 +107,33 @@
             <span>Информация о тарифах и условиях опубликована на этом сайте и может обновляться до оформления покупки.</span>
         </div>
     </footer>
+
+    @if (config('analytics.metrika.enabled'))
+        <section
+            class="analytics-consent"
+            data-analytics-consent
+            data-consent-version="{{ config('analytics.consent_version') }}"
+            data-metrika-id="{{ config('analytics.metrika.counter_id') }}"
+            data-metrika-webvisor="{{ config('analytics.metrika.webvisor') ? 'true' : 'false' }}"
+            data-metrika-clickmap="{{ config('analytics.metrika.clickmap') ? 'true' : 'false' }}"
+            data-metrika-track-links="{{ config('analytics.metrika.track_links') ? 'true' : 'false' }}"
+            data-metrika-accurate-bounce="{{ config('analytics.metrika.accurate_track_bounce') ? 'true' : 'false' }}"
+            aria-labelledby="analytics-consent-title"
+            hidden
+        >
+            <div class="analytics-consent__card">
+                <div class="analytics-consent__copy">
+                    <p class="analytics-consent__eyebrow">Аналитика сайта</p>
+                    <h2 id="analytics-consent-title">Помочь улучшать Cropkeeper?</h2>
+                    <p>С вашего разрешения мы используем Яндекс Метрику, чтобы понимать, какие публичные страницы полезны посетителям. Без вашего согласия Метрика не запускается.</p>
+                    <a href="{{ route('cookies') }}">Подробнее о cookies и аналитике</a>
+                </div>
+                <div class="analytics-consent__actions">
+                    <button class="button button--outline" type="button" data-analytics-reject>Не разрешать</button>
+                    <button class="button button--primary" type="button" data-analytics-accept>Разрешить аналитику</button>
+                </div>
+            </div>
+        </section>
+    @endif
 </body>
 </html>
