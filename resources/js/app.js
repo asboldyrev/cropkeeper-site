@@ -1,4 +1,5 @@
 import '../css/analytics-consent.css';
+import '../css/tariffs.css';
 
 import {
     ArrowRight,
