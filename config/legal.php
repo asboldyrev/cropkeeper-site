@@ -17,23 +17,37 @@ return [
             'title' => 'Публичная оферта',
             'canonical_route' => 'offer',
             'current' => [
-                'revision' => '2026-09-05',
-                'label' => 'Редакция от 5 сентября 2026 года',
-                'effective_from' => '2026-09-05',
+                'revision' => '2026-09-14',
+                'label' => 'Редакция от 14 сентября 2026 года',
+                'effective_from' => '2026-09-14',
                 'view' => 'legal.offer',
             ],
-            'archive' => [],
+            'archive' => [
+                [
+                    'revision' => '2026-09-05',
+                    'label' => 'Редакция от 5 сентября 2026 года',
+                    'effective_from' => '2026-09-05',
+                    'view' => 'legal.archive.offer.2026-09-05',
+                ],
+            ],
         ],
         'personal-data' => [
             'title' => 'Политика обработки персональных данных',
             'canonical_route' => 'personal-data',
             'current' => [
-                'revision' => '2026-09-05',
-                'label' => 'Редакция от 5 сентября 2026 года',
-                'effective_from' => '2026-09-05',
+                'revision' => '2026-09-14',
+                'label' => 'Редакция от 14 сентября 2026 года',
+                'effective_from' => '2026-09-14',
                 'view' => 'legal.personal-data',
             ],
-            'archive' => [],
+            'archive' => [
+                [
+                    'revision' => '2026-09-05',
+                    'label' => 'Редакция от 5 сентября 2026 года',
+                    'effective_from' => '2026-09-05',
+                    'view' => 'legal.archive.personal-data.2026-09-05',
+                ],
+            ],
         ],
         'cookies' => [
             'title' => 'Cookies и аналитика',

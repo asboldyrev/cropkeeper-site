@@ -6,115 +6,126 @@ Last updated: 2026-09-14
 
 Legal hardening of the public Cropkeeper site before production payment-provider onboarding.
 
-The first landing implementation is complete and merged into `dev`. Work has started on the first legal-hardening package in `feature/legal-document-architecture`.
+The canonical legal-document architecture has been reviewed and merged into `dev`. The active work now moves to the substantive legal-content revision in `feature/legal-content-revision`.
 
 ## Current repository state
 
-`dev` contains the completed first landing baseline. `main` is still at the pre-landing baseline and must not be promoted until the remaining release gates below are complete.
+`dev` now contains:
 
-The active feature branch introduces the first canonical legal-document architecture:
+- public landing at `/`;
+- canonical legal pages `/agreement`, `/offer`, `/personal-data`, `/cookies`;
+- permanent legacy redirect `/privacy` → `/personal-data`;
+- repository-backed legal revision registry in `config/legal.php`;
+- public archive index/revision routes under `/legal/{document}/archive`;
+- archived Privacy Policy revision from 2026-09-05;
+- canonical legal navigation in the landing and footer;
+- conditional seller/contact rendering;
+- automated feature coverage for public legal pages and archive behavior.
 
-- `/agreement` — canonical User Agreement;
-- `/offer` — canonical Public Offer;
-- `/personal-data` — canonical Personal Data Processing Policy;
-- `/cookies` — canonical cookies / Yandex Metrika document;
-- `/privacy` — legacy permanent redirect to `/personal-data` instead of a second active privacy policy;
-- `config/legal.php` as the registry of document codes, active revisions and archived revisions;
-- public archive routes under `/legal/{document}/archive` and `/legal/{document}/archive/{revision}`;
-- the former Privacy Policy revision dated 2026-09-05 preserved as an archived historical revision;
-- canonical legal navigation in the landing trust block and footer;
-- feature coverage for canonical pages, redirects, archive indexes, archived revisions and missing revisions.
+`main` remains at the pre-landing production baseline and must not be promoted until the remaining release gates are complete.
 
-This work remains feature-branch state until locally verified and merged into `dev`.
+## Active legal-content work
 
-## Legal-document checkpoint
+The current feature branch freezes the previous 2026-09-05 Offer and Personal Data Processing Policy into immutable archives and introduces new active revisions dated 2026-09-14.
 
-The architecture work is now in progress, but the substantive legal-content gate is not yet closed.
+The new Offer is being aligned with the final agreed product/legal model for:
 
-The new User Agreement and cookies/analytics document are being introduced from the final legal-audit requirements. The existing Offer and Personal Data Processing Policy still require a new substantive revision that incorporates the final audited model for:
+- paid access with and without auto-renewal;
+- explicit auto-renewal opt-in;
+- disablement without terminating the already paid period;
+- no simple re-enable after disablement; a new purchase/payment flow is required;
+- old recurring price warning before disablement;
+- queue/pause semantics for already paid periods;
+- email notice at least 3 calendar days before recurring charge;
+- deterministic proportional refunds from the actually paid amount;
+- paused/frozen paid-period refunds;
+- 12-hour threshold for the current incomplete 24-hour period;
+- upward rounding to the nearest kopeck in the user's favor;
+- refund completion no later than 7 calendar days where grounds exist;
+- material Offer changes requiring advance email notice and explicit in-app confirmation before charging under changed terms.
 
-- access without auto-renewal and auto-renewing subscriptions;
-- final disable/re-enable auto-payment rules;
-- deterministic refund rules and frozen paid periods;
-- support retention and service-email flows;
-- locality / approximate coordinates and Open-Meteo;
-- account deletion and 48-hour export archive behavior;
-- material document changes and re-acceptance rules where required;
-- Yandex Metrika processing after explicit consent.
+The new Personal Data Processing Policy is being aligned with the final data-flow model for:
 
-When either current document is substantively replaced, its previously published current revision must first be frozen into the repository-backed archive and then registered in `config/legal.php`.
+- account data and user content;
+- locality and approximate coordinates;
+- Open-Meteo server-side weather requests with locality coordinates only;
+- subscription/payment metadata;
+- technical logs including IP/user-agent;
+- technical support and service mail;
+- support retention: ordinary requests up to 1 year after closure; payment/refund/legal disputes longer, with a three-year reference period;
+- Yandex Metrika only after explicit consent;
+- export archive generation and 48-hour retention, including access after account deletion until the original expiry;
+- optional archive-link delivery by email;
+- deletion of active account data and continued storage only where a separate lawful basis remains.
+
+The public documents remain user-facing documents. Internal implementation instructions must not appear in their text.
 
 ## Product-copy checkpoint
 
-The landing copy was already corrected to avoid advertising partially implemented functionality as currently available. The current presentation is intentionally conservative about gardens, recommendations and recurring tasks.
+The landing still needs a separate commercial-copy pass after the legal-content revision.
 
-The remaining commercial-copy requirement is to distinguish clearly between:
+The final tariff presentation must distinguish clearly between:
 
 - access for 1 month without auto-renewal;
 - access for 12 months without auto-renewal;
 - monthly subscription with auto-renewal;
 - annual subscription with auto-renewal.
 
-The page must show access period and auto-renewal state as separate properties, must not use `разовая подписка`, and must continue to avoid unpublished or incomplete features.
+The page must show access period and auto-renewal state separately, must not use `разовая подписка`, and must not advertise unfinished functionality.
 
 ## Analytics checkpoint
 
-Yandex Metrika remains unimplemented and must not be added as an unconditional page-load dependency.
+Yandex Metrika consent behavior is documented but runtime integration is not yet implemented.
 
-Final rule:
+Required runtime behavior remains:
 
-- Metrika does not initialize before positive consent;
-- continuing to browse is not consent;
-- accept and reject are both available;
-- the decision is persisted;
-- the visitor can later change or withdraw the decision;
-- after rejection/withdrawal Metrika stays disabled on later visits until consent is granted again.
-
-Before enablement, Webvisor, field masking, URL/query capture and unnecessary personal-data leakage must be checked.
+- no Metrika initialization before positive consent;
+- explicit accept and reject actions;
+- persisted decision;
+- ability to change or withdraw the decision later;
+- no initialization on later visits after rejection/withdrawal until consent is granted again;
+- Webvisor, masking and URL/query review before enablement.
 
 ## Cross-repository dependencies
 
-Several requirements from the final legal audit describe application behavior and cannot be completed only in `cropkeeper-site`.
+Several final rules are implemented in `cropkeeper-app`, not this repository, but the public documents describe them and therefore the behavior must match before release:
 
-They must be coordinated with `asboldyrev/cropkeeper-app`, including:
+- User Agreement acceptance/re-acceptance;
+- material Offer-change confirmation;
+- auto-renewal disablement and old-price warning;
+- recurring-charge email notices;
+- refund calculation/processing;
+- account deletion;
+- export archive generation, 48-hour TTL, post-deletion access and optional email link;
+- archive import into a sufficiently empty new account;
+- support workflow and retention;
+- service-email behavior.
 
-- User Agreement acceptance and re-acceptance;
-- material Offer-change acceptance before future recurring charges;
-- subscription auto-renewal enable/disable UX and old-price warning;
-- account deletion without the former six-month deactivation model;
-- user-data export, 48-hour archive lifecycle, optional email link and access after account deletion until the original `expires_at`;
-- archive import during new registration;
-- the new technical-support workflow and support-message retention;
-- service email behavior;
-- document-change notifications.
-
-The landing repository owns canonical public documents, archive publication, legal navigation, public tariff wording, cookie/Metrika consent and landing-specific security/license checks. The application must link to these canonical public URLs instead of maintaining independent stale copies.
+The site owns canonical public legal documents and archives. The application must link to these URLs rather than maintaining stale copies.
 
 ## Release blockers
 
-The site must not be promoted to `main` or submitted as the final merchant-onboarding website until the following gates are closed:
+The site must not be promoted to `main` or submitted as the final merchant-onboarding website until:
 
-1. canonical/versioned legal architecture is merged and verified;
-2. final substantive legal documents are prepared and published;
-3. public immutable archives are complete for every superseded published revision;
-4. CloudTips and obsolete support/payment wording are absent from active content;
-5. Yandex Metrika is consent-gated and documented;
-6. tariff/subscription wording matches the final product/payment model;
-7. all legal links use canonical public URLs and are available without authentication;
-8. cross-repository application requirements that materially affect the legal texts are implemented or their exact final behavior is frozen;
-9. technical security review of the landing is complete;
-10. open-source dependency/license review is complete;
-11. production seller details, contacts and paid prices are filled with real values.
+1. the new Offer and Personal Data Processing Policy are reviewed, tested and merged;
+2. all superseded published legal revisions are preserved in the public archive;
+3. CloudTips and obsolete support/payment wording are absent from active content;
+4. Yandex Metrika consent runtime is implemented and verified;
+5. tariff/subscription public copy matches the final commercial model and real checkout prices;
+6. all application legal links use canonical site URLs;
+7. cross-repository application behavior materially referenced by the documents is implemented or frozen consistently;
+8. landing security/privacy acceptance is complete;
+9. open-source dependency/license acceptance is complete;
+10. production seller details, contacts and prices are filled with real values.
 
 ## Immediate next work
 
-1. Finish and locally verify `feature/legal-document-architecture`.
-2. Merge it into `dev` after review.
-3. Start the substantive Offer and Personal Data Processing Policy revision, freezing the existing published revisions into the archive first.
-4. Then proceed to Yandex Metrika consent and commercial tariff/subscription copy.
-
-Payment-provider onboarding and production promotion remain after the legal-hardening stage.
+1. Review and locally verify `feature/legal-content-revision`.
+2. Merge it into `dev` after approval.
+3. Implement consent-gated Yandex Metrika.
+4. Finalize tariff/subscription copy.
+5. Continue with canonical-link application integration and remaining release gates.
 
 ## Handoff rule
 
-Update this file when a release gate closes, the active stage changes, a new genuine blocker is discovered, or the cross-repository behavior required by the legal texts is materially changed.
+Update this file when the active feature is merged, a release gate closes, the active stage changes, or cross-repository behavior referenced by the legal texts changes.
