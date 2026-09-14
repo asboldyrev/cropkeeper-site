@@ -41,6 +41,29 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('До подключения production-платежей');
     }
 
+    public function test_paid_tariffs_distinguish_access_period_and_auto_renewal(): void
+    {
+        config()->set('landing.plans.1.purchase_options.0.price', '100 ₽');
+        config()->set('landing.plans.1.purchase_options.1.price', '1000 ₽');
+        config()->set('landing.plans.1.purchase_options.2.price', '90 ₽');
+        config()->set('landing.plans.1.purchase_options.3.price', '900 ₽');
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Доступ на 1 месяц без автопродления')
+            ->assertSee('Доступ на 12 месяцев без автопродления')
+            ->assertSee('Ежемесячная подписка с автопродлением')
+            ->assertSee('Годовая подписка с автопродлением')
+            ->assertSee('Период доступа')
+            ->assertSee('Автопродление')
+            ->assertSee('100 ₽')
+            ->assertSee('1000 ₽')
+            ->assertSee('90 ₽')
+            ->assertSee('900 ₽')
+            ->assertDontSee('data-billing-switch', false)
+            ->assertDontSee('разовая подписка');
+    }
+
     public function test_empty_seller_details_are_not_rendered(): void
     {
         config()->set('landing.seller', [
