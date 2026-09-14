@@ -59,17 +59,9 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('footer-label">Связь', false)
             ->assertDontSee('footer-label">Продавец', false);
 
-        $this->get('/agreement')
-            ->assertOk()
-            ->assertDontSee('11. Сведения о Правообладателе');
-
-        $this->get('/offer')
-            ->assertOk()
-            ->assertDontSee('10. Контакты и реквизиты продавца');
-
-        $this->get('/personal-data')
-            ->assertOk()
-            ->assertDontSee('10. Сведения об операторе');
+        $this->get('/agreement')->assertOk()->assertDontSee('11. Сведения о Правообладателе');
+        $this->get('/offer')->assertOk()->assertDontSee('10. Сведения о Правообладателе / Исполнителе');
+        $this->get('/personal-data')->assertOk()->assertDontSee('13. Сведения об операторе');
     }
 
     public function test_only_filled_seller_details_are_rendered(): void
@@ -84,23 +76,16 @@ class PublicPagesTest extends TestCase
             'phone' => null,
         ]);
 
-        $this->get('/agreement')
-            ->assertOk()
-            ->assertSee('ИП Тестовый Продавец')
-            ->assertSee('support@example.test')
-            ->assertDontSee('<dt>Телефон</dt>', false)
-            ->assertDontSee('<dt>ИНН</dt>', false)
-            ->assertDontSee('<dt>ОГРНИП / ОГРН</dt>', false)
-            ->assertDontSee('<dt>Адрес</dt>', false);
-
-        $this->get('/offer')
-            ->assertOk()
-            ->assertSee('ИП Тестовый Продавец')
-            ->assertSee('support@example.test')
-            ->assertDontSee('<dt>Телефон</dt>', false)
-            ->assertDontSee('<dt>ИНН</dt>', false)
-            ->assertDontSee('<dt>ОГРНИП / ОГРН</dt>', false)
-            ->assertDontSee('<dt>Адрес</dt>', false);
+        foreach (['/agreement', '/offer', '/personal-data'] as $url) {
+            $this->get($url)
+                ->assertOk()
+                ->assertSee('ИП Тестовый Продавец')
+                ->assertSee('support@example.test')
+                ->assertDontSee('<dt>Телефон</dt>', false)
+                ->assertDontSee('<dt>ИНН</dt>', false)
+                ->assertDontSee('<dt>ОГРНИП / ОГРН</dt>', false)
+                ->assertDontSee('<dt>Адрес</dt>', false);
+        }
     }
 
     public function test_user_agreement_is_public_and_versioned(): void
@@ -112,16 +97,19 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('Архив редакций');
     }
 
-    public function test_offer_is_public_and_versioned(): void
+    public function test_offer_contains_final_auto_renewal_and_refund_rules(): void
     {
         $this->get('/offer')
             ->assertOk()
             ->assertSee('Публичная оферта')
-            ->assertSee('Стоимость и порядок оплаты')
-            ->assertSee('Автоматическое продление')
-            ->assertSee('Редакция от 5 сентября 2026 года')
-            ->assertDontSee('Архив редакций')
-            ->assertDontSee('Перед публикацией замените');
+            ->assertSee('Редакция от 14 сентября 2026 года')
+            ->assertSee('Автопродление выключено по умолчанию')
+            ->assertSee('не менее чем за 3 календарных дня')
+            ->assertSee('фактически уплаченная стоимость периода')
+            ->assertSee('порог 12 часов')
+            ->assertSee('округляется вверх до ближайшей копейки')
+            ->assertSee('Архив редакций')
+            ->assertDontSee('Вопросы возврата денежных средств рассматриваются по обращению Пользователя');
     }
 
     public function test_legacy_privacy_url_redirects_to_canonical_personal_data_policy(): void
@@ -131,14 +119,19 @@ class PublicPagesTest extends TestCase
             ->assertRedirect('/personal-data');
     }
 
-    public function test_personal_data_policy_is_public_and_versioned(): void
+    public function test_personal_data_policy_contains_final_data_flows(): void
     {
         $this->get('/personal-data')
             ->assertOk()
             ->assertSee('Политика обработки персональных данных')
-            ->assertSee('Цели и правовые основания обработки')
-            ->assertSee('Редакция от 5 сентября 2026 года')
-            ->assertDontSee('Архив редакций')
+            ->assertSee('Редакция от 14 сентября 2026 года')
+            ->assertSee('приблизительные координаты')
+            ->assertSee('Open-Meteo')
+            ->assertSee('48 часов')
+            ->assertSee('до 1 года после закрытия')
+            ->assertSee('трёхлетний срок')
+            ->assertSee('Яндекс Метрика используется только после вашего явного согласия')
+            ->assertSee('Архив редакций')
             ->assertDontSee('Рабочий шаблон')
             ->assertDontSee('до production-запуска');
     }
@@ -155,30 +148,27 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('Перед включением аналитики Cropkeeper должен');
     }
 
-    public function test_active_document_shows_archive_link_when_previous_revision_exists(): void
-    {
-        $document = config('legal.documents.agreement');
-        $document['archive'] = [
-            [
-                'revision' => '2026-09-01',
-                'label' => 'Редакция от 1 сентября 2026 года',
-                'effective_from' => '2026-09-01',
-                'view' => 'legal.agreement',
-            ],
-        ];
-        config()->set('legal.documents.agreement', $document);
-
-        $this->get('/agreement')
-            ->assertOk()
-            ->assertSee('Архив редакций');
-    }
-
     public function test_archive_indexes_are_public_without_authentication(): void
     {
         foreach (['agreement', 'offer', 'personal-data', 'cookies', 'privacy'] as $document) {
             $this->get("/legal/{$document}/archive")
                 ->assertOk()
                 ->assertSee('Архив');
+        }
+    }
+
+    public function test_superseded_offer_and_personal_data_revisions_are_public_and_marked_archived(): void
+    {
+        foreach ([
+            '/legal/offer/archive/2026-09-05' => 'Публичная оферта',
+            '/legal/personal-data/archive/2026-09-05' => 'Политика обработки персональных данных',
+        ] as $url => $title) {
+            $this->get($url)
+                ->assertOk()
+                ->assertSee($title)
+                ->assertSee('Редакция от 5 сентября 2026 года')
+                ->assertSee('архивная редакция', false)
+                ->assertSee('больше не действует');
         }
     }
 
