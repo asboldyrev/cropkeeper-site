@@ -54,9 +54,10 @@
             <div>
                 <p class="footer-label">Документы</p>
                 <div class="footer-links">
+                    <a href="{{ route('agreement') }}">Пользовательское соглашение</a>
                     <a href="{{ route('offer') }}">Публичная оферта</a>
-                    <a href="{{ route('privacy') }}">Политика конфиденциальности</a>
                     <a href="{{ route('personal-data') }}">Политика обработки персональных данных</a>
+                    <a href="{{ route('cookies') }}">Cookies и аналитика</a>
                 </div>
             </div>
 
