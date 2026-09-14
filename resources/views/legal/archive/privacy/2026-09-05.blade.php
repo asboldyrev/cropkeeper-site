@@ -1,26 +1,23 @@
 @extends('layouts.site')
 
-@section('title', 'Политика конфиденциальности — Cropkeeper')
-@section('description', 'Политика конфиденциальности Cropkeeper: какие данные используются при работе сайта и приложения.')
-
-@php
-    $seller = config('landing.seller', []);
-    $hasSellerDetails = collect($seller)->contains(fn ($value) => filled($value));
-@endphp
+@section('title', 'Архив: Политика конфиденциальности от 5 сентября 2026 года — Cropkeeper')
+@section('description', 'Архивная редакция Политики конфиденциальности Cropkeeper от 5 сентября 2026 года.')
 
 @section('content')
 <section class="legal-hero">
     <div class="shell legal-hero__inner">
-        <p class="eyebrow"><span></span> Документы</p>
+        <p class="eyebrow"><span></span> Архив документов</p>
         <h1>Политика конфиденциальности</h1>
-        <p>Кратко и понятно о данных, которые нужны Cropkeeper для работы сервиса.</p>
-        <span class="legal-updated">Редакция от 5 сентября 2026 года</span>
+        <p>Архивная редакция документа. Эта версия больше не является действующей.</p>
+        <span class="legal-updated">{{ $legalRevision['label'] }}</span>
+        <a class="legal-archive-link" href="{{ route('personal-data') }}">Открыть действующую Политику обработки персональных данных</a>
     </div>
 </section>
 
 <section class="legal-section">
     <div class="shell legal-layout">
         <aside class="legal-aside" aria-label="Навигация по документу">
+            <a href="#archive-warning">Архивная версия</a>
             <a href="#scope">1. Область действия</a>
             <a href="#data">2. Какие данные</a>
             <a href="#purpose">3. Для чего</a>
@@ -35,6 +32,11 @@
         </aside>
 
         <article class="legal-document">
+            <div class="legal-notice" id="archive-warning">
+                <i data-lucide="triangle-alert" aria-hidden="true"></i>
+                <p>Это архивная редакция от 5 сентября 2026 года. Она сохранена без изменения исторического содержания и больше не действует.</p>
+            </div>
+
             <section id="scope">
                 <h2>1. Область действия</h2>
                 <p>Настоящая Политика объясняет, как Cropkeeper использует информацию при посещении сайта cropkeeper.me и работе с приложением Cropkeeper.</p>
@@ -98,18 +100,10 @@
                 <section id="contacts">
                     <h2>9. Контакты</h2>
                     <dl class="legal-details">
-                        @if (filled($seller['name'] ?? null))
-                            <div><dt>Оператор / продавец</dt><dd>{{ $seller['name'] }}</dd></div>
-                        @endif
-                        @if (filled($seller['email'] ?? null))
-                            <div><dt>Email</dt><dd>{{ $seller['email'] }}</dd></div>
-                        @endif
-                        @if (filled($seller['phone'] ?? null))
-                            <div><dt>Телефон</dt><dd>{{ $seller['phone'] }}</dd></div>
-                        @endif
-                        @if (filled($seller['address'] ?? null))
-                            <div><dt>Адрес</dt><dd>{{ $seller['address'] }}</dd></div>
-                        @endif
+                        @if (filled($seller['name'] ?? null))<div><dt>Оператор / продавец</dt><dd>{{ $seller['name'] }}</dd></div>@endif
+                        @if (filled($seller['email'] ?? null))<div><dt>Email</dt><dd>{{ $seller['email'] }}</dd></div>@endif
+                        @if (filled($seller['phone'] ?? null))<div><dt>Телефон</dt><dd>{{ $seller['phone'] }}</dd></div>@endif
+                        @if (filled($seller['address'] ?? null))<div><dt>Адрес</dt><dd>{{ $seller['address'] }}</dd></div>@endif
                     </dl>
                 </section>
             @endif

@@ -14,7 +14,12 @@
         <p class="eyebrow"><span></span> Документы</p>
         <h1>Политика обработки персональных данных</h1>
         <p>Правила обработки персональных данных при использовании Cropkeeper.</p>
-        <span class="legal-updated">Редакция от 5 сентября 2026 года</span>
+        <div class="legal-meta" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;">
+            <span class="legal-updated" style="margin-top:0;">{{ $legalRevision['label'] }}</span>
+            @if (! empty($legalDocument['archive']))
+                <a class="button button--small button--ghost legal-archive-link" href="{{ route('legal.archive.index', ['document' => $documentCode]) }}">Архив редакций</a>
+            @endif
+        </div>
     </div>
 </section>
 
