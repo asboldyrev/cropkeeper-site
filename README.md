@@ -2,11 +2,28 @@
 
 Public landing for `cropkeeper.me`. The site explains Cropkeeper, publishes tariffs and legal documents, and provides the public information required for production payment-provider onboarding.
 
+## Current status
+
+The first landing implementation has been completed and merged into `dev`.
+
+The active release stage is now **legal hardening before production payment-provider onboarding**. Final legal-audit requirements include canonical versioned legal documents, public immutable archives, Yandex Metrika consent, final tariff/subscription wording, cross-repository application/legal synchronization, and release security/license checks.
+
+See:
+
+- `docs/PROJECT_STATUS.md` — current checkpoint and release blockers;
+- `docs/ROADMAP.md` — ordered remaining release stages;
+- `docs/LEGAL_AUDIT_PLAN.md` — detailed implementation plan and acceptance criteria.
+
 ## Branching
 
-The repository follows gitflow. Feature work branches from `dev`; do not commit feature changes directly to `dev`.
+The repository follows gitflow.
 
-Current landing work: `feature/payment-provider-landing`.
+- feature/documentation work branches from the current `dev`;
+- changes are reviewed/verified before integration into `dev`;
+- `main` is reserved for production-ready promotion;
+- do not commit feature work directly to `dev` or `main`.
+
+The former `feature/payment-provider-landing` branch was merged into `dev` on 2026-09-09 and removed. It is no longer the current working branch.
 
 ## Stack
 
@@ -33,12 +50,14 @@ For development:
 composer dev
 ```
 
-## Public pages
+## Current public pages
 
-- `/` — landing, current product capabilities, tariffs, roadmap, contacts and seller details
-- `/offer` — public offer
-- `/privacy` — privacy policy
-- `/personal-data` — personal data processing policy
+- `/` — landing, current product capabilities, tariffs, public roadmap, contacts and seller details
+- `/offer` — current first-pass public Offer
+- `/privacy` — current first-pass Privacy Policy
+- `/personal-data` — current first-pass Personal Data Processing Policy
+
+These legal pages are **not yet the final audited document architecture**. The final legal-hardening stage must add the User Agreement, cookies/Yandex Metrika documentation, document revision/version metadata and public immutable archives, and must revise the existing legal texts to match the final Cropkeeper behavior.
 
 ## Landing configuration
 
@@ -63,20 +82,41 @@ LANDING_PREMIUM_MONTHLY_PRICE="... ₽"
 LANDING_PREMIUM_YEARLY_PRICE="... ₽"
 ```
 
-The tariff matrix itself is intentionally static in the site config for the first release. This keeps the public landing available even if the application API is unavailable and makes merchant onboarding independent from application authentication/CORS. If a public read-only tariff endpoint is introduced later, the source can be replaced without redesigning the page.
+Seller/contact fields are rendered only when the corresponding configured value is present.
 
-## Payment-provider onboarding gate
+The tariff matrix is currently static in the site config. This keeps the public landing available independently of the application API. Before production onboarding, displayed paid prices and commercial wording must be reconciled with the actual application checkout.
 
-Before submitting `cropkeeper.me` for review, confirm all of the following:
+## Legal-source architecture target
 
-- the production URL opens publicly without authentication;
-- all placeholder seller/contact values have been replaced;
-- paid tariff prices are real and match the application checkout;
-- the product description reflects only functionality actually offered;
-- `/offer`, `/privacy`, and `/personal-data` open publicly;
-- the offer describes access timing, automatic renewal, cancellation and refunds;
-- seller legal details and contacts are visible in the footer;
-- all purchase-related pages remain on the intended public domain or are clearly linked to the application checkout;
-- there are no development/test labels, sample seller data or fake prices in production.
+`cropkeeper.me` must become the single public source of current legal documents used by both the landing and `asboldyrev/cropkeeper-app`.
 
-The legal pages are working launch templates, not a substitute for a final legal review. They must be checked against the actual seller status, infrastructure, payment provider and production data flows before publication.
+Target rules:
+
+- stable canonical active-document URLs;
+- public access without authentication;
+- explicit revision/version metadata;
+- public archive index for every legal document;
+- immutable archived revisions;
+- application links point to the same canonical site URLs;
+- Personal Data Processing Policy is not treated as a contract requiring acceptance;
+- explicit consent is requested only where consent is actually the legal basis;
+- Yandex Metrika loads only after explicit analytics consent.
+
+See `docs/LEGAL_AUDIT_PLAN.md` for the full target design.
+
+## Production onboarding gate
+
+Before submitting `cropkeeper.me` for merchant review and before promoting `dev` to `main`, confirm all of the following:
+
+- final current legal documents are published at canonical public URLs;
+- every legal document has revision metadata and a public immutable archive;
+- CloudTips and obsolete support/payment wording are absent from active content;
+- Yandex Metrika is consent-gated and documented;
+- paid-access wording distinguishes access without auto-renewal from auto-renewing subscriptions;
+- public tariff prices match the actual application checkout;
+- refund and auto-renewal rules match application behavior;
+- application legal links use the same canonical site URLs;
+- production seller/contact values are filled;
+- security acceptance passes;
+- open-source license acceptance passes;
+- the production URL is public and all legal/archive/consent flows pass smoke testing.
