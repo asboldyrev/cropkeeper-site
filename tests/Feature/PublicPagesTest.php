@@ -17,9 +17,10 @@ class PublicPagesTest extends TestCase
             ->assertSee('Free')
             ->assertSee('Pro')
             ->assertSee('Premium')
+            ->assertSee('Пользовательское соглашение')
             ->assertSee('Публичная оферта')
-            ->assertSee('Политика конфиденциальности')
-            ->assertSee('Обработка персональных данных');
+            ->assertSee('Политика обработки персональных данных')
+            ->assertSee('Cookies и аналитика');
     }
 
     public function test_landing_only_advertises_current_core_features_as_available(): void
@@ -58,13 +59,13 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('footer-label">Связь', false)
             ->assertDontSee('footer-label">Продавец', false);
 
+        $this->get('/agreement')
+            ->assertOk()
+            ->assertDontSee('11. Сведения о Правообладателе');
+
         $this->get('/offer')
             ->assertOk()
             ->assertDontSee('10. Контакты и реквизиты продавца');
-
-        $this->get('/privacy')
-            ->assertOk()
-            ->assertDontSee('<h2>9. Контакты</h2>', false);
 
         $this->get('/personal-data')
             ->assertOk()
@@ -83,7 +84,7 @@ class PublicPagesTest extends TestCase
             'phone' => null,
         ]);
 
-        $this->get('/')
+        $this->get('/agreement')
             ->assertOk()
             ->assertSee('ИП Тестовый Продавец')
             ->assertSee('support@example.test')
@@ -102,33 +103,78 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('<dt>Адрес</dt>', false);
     }
 
-    public function test_offer_is_public(): void
+    public function test_user_agreement_is_public_and_versioned(): void
+    {
+        $this->get('/agreement')
+            ->assertOk()
+            ->assertSee('Пользовательское соглашение')
+            ->assertSee('Редакция от 14 сентября 2026 года')
+            ->assertSee('Архив редакций');
+    }
+
+    public function test_offer_is_public_and_versioned(): void
     {
         $this->get('/offer')
             ->assertOk()
             ->assertSee('Публичная оферта')
             ->assertSee('Стоимость и порядок оплаты')
             ->assertSee('Автоматическое продление')
+            ->assertSee('Редакция от 5 сентября 2026 года')
+            ->assertSee('Архив редакций')
             ->assertDontSee('Перед публикацией замените');
     }
 
-    public function test_privacy_policy_is_public(): void
+    public function test_legacy_privacy_url_redirects_to_canonical_personal_data_policy(): void
     {
         $this->get('/privacy')
-            ->assertOk()
-            ->assertSee('Политика конфиденциальности')
-            ->assertSee('Какие данные могут использоваться')
-            ->assertDontSee('рабочая версия документа')
-            ->assertDontSee('До production-запуска');
+            ->assertStatus(301)
+            ->assertRedirect('/personal-data');
     }
 
-    public function test_personal_data_policy_is_public(): void
+    public function test_personal_data_policy_is_public_and_versioned(): void
     {
         $this->get('/personal-data')
             ->assertOk()
             ->assertSee('Политика обработки персональных данных')
             ->assertSee('Цели и правовые основания обработки')
+            ->assertSee('Редакция от 5 сентября 2026 года')
+            ->assertSee('Архив редакций')
             ->assertDontSee('Рабочий шаблон')
             ->assertDontSee('до production-запуска');
+    }
+
+    public function test_cookies_document_is_public_and_versioned(): void
+    {
+        $this->get('/cookies')
+            ->assertOk()
+            ->assertSee('Cookies и аналитика')
+            ->assertSee('Яндекс Метрика')
+            ->assertSee('Редакция от 14 сентября 2026 года')
+            ->assertSee('Архив редакций');
+    }
+
+    public function test_archive_indexes_are_public_without_authentication(): void
+    {
+        foreach (['agreement', 'offer', 'personal-data', 'cookies', 'privacy'] as $document) {
+            $this->get("/legal/{$document}/archive")
+                ->assertOk()
+                ->assertSee('Архив');
+        }
+    }
+
+    public function test_superseded_privacy_revision_is_public_and_marked_archived(): void
+    {
+        $this->get('/legal/privacy/archive/2026-09-05')
+            ->assertOk()
+            ->assertSee('Политика конфиденциальности')
+            ->assertSee('Редакция от 5 сентября 2026 года')
+            ->assertSee('архивная редакция', false)
+            ->assertSee('больше не действует');
+    }
+
+    public function test_unknown_legal_document_and_revision_return_not_found(): void
+    {
+        $this->get('/legal/unknown/archive')->assertNotFound();
+        $this->get('/legal/privacy/archive/2099-01-01')->assertNotFound();
     }
 }
