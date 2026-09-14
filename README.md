@@ -4,11 +4,9 @@ Public landing for `cropkeeper.me`. The site explains Cropkeeper, publishes tari
 
 ## Current status
 
-The first landing implementation has been completed and merged into `dev`.
+The first landing implementation, canonical legal-document architecture, and final Offer / Personal Data Processing Policy revision have been completed and merged into `dev`.
 
-The active release stage is now **legal hardening before production payment-provider onboarding**. Final legal-audit requirements include canonical versioned legal documents, public immutable archives, Yandex Metrika consent, final tariff/subscription wording, cross-repository application/legal synchronization, and release security/license checks.
-
-The first legal-hardening work package introduces canonical document routes, a registry for revision metadata, public archive routes, the User Agreement and cookies/analytics pages, and retirement of the duplicate active Privacy Policy URL in favor of the Personal Data Processing Policy.
+The active release stage is now **consent-gated Yandex Metrika before production payment-provider onboarding**. Remaining work after analytics consent includes final tariff/subscription copy, cross-repository legal-link/product-behavior synchronization, and release security/license checks.
 
 See:
 
@@ -67,10 +65,6 @@ Archive routes use:
 
 Document metadata and current/archive revision mappings live in `config/legal.php`. Published archived revisions are repository-backed and must not be edited retroactively.
 
-The former standalone Privacy Policy revision dated 2026-09-05 is preserved as an archived historical document rather than remaining a second active privacy policy.
-
-The Offer and Personal Data Processing Policy still require their next substantive legal-audit revision before production launch; the registry/archive architecture is intentionally separate from that content update.
-
 ## Landing configuration
 
 Public content that must be easy to change without editing templates lives in `config/landing.php`.
@@ -79,6 +73,8 @@ Production-specific values are supplied through `.env`:
 
 ```dotenv
 CROPKEEPER_APP_URL=https://app.cropkeeper.me
+
+YANDEX_METRIKA_COUNTER_ID=
 
 LANDING_SELLER_NAME="..."
 LANDING_SELLER_STATUS="..."
@@ -98,9 +94,26 @@ Seller/contact fields are rendered only when the corresponding configured value 
 
 The tariff matrix is currently static in the site config. This keeps the public landing available independently of the application API. Before production onboarding, displayed paid prices and commercial wording must be reconciled with the actual application checkout.
 
+## Yandex Metrika consent
+
+Metrika is configured through `YANDEX_METRIKA_COUNTER_ID`. If the value is empty, the analytics consent UI and Metrika integration are not rendered.
+
+When a counter ID is configured:
+
+- the initial server-rendered HTML contains no Yandex Metrika script or `noscript` tracking pixel;
+- the visitor must explicitly choose whether analytics is allowed;
+- accept/reject state is stored in localStorage together with the consent-policy version;
+- rejection prevents Metrika initialization on later page loads;
+- the footer exposes `Настройки аналитики`, allowing the visitor to change the choice later;
+- withdrawing consent calls the Metrika `destruct` method, removes the dynamically injected script, and clears known first-party Metrika cookies where possible;
+- Webvisor is disabled by default;
+- automatic initial pageview sending is disabled and the site sends a pageview URL without query parameters after consent.
+
+Analytics settings live in `config/analytics.php`. Before enabling a production counter, verify the actual Yandex-side counter settings as part of privacy acceptance.
+
 ## Legal-source architecture
 
-`cropkeeper.me` is the intended single public source of current legal documents used by both the landing and `asboldyrev/cropkeeper-app`.
+`cropkeeper.me` is the single public source of current legal documents used by both the landing and `asboldyrev/cropkeeper-app`.
 
 Rules:
 
@@ -121,9 +134,9 @@ See `docs/LEGAL_AUDIT_PLAN.md` for the full target design.
 Before submitting `cropkeeper.me` for merchant review and before promoting `dev` to `main`, confirm all of the following:
 
 - final current legal documents are published at canonical public URLs;
-- every legal document has revision metadata and a public immutable archive;
+- every superseded legal revision is preserved in the public immutable archive;
 - CloudTips and obsolete support/payment wording are absent from active content;
-- Yandex Metrika is consent-gated and documented;
+- Yandex Metrika is consent-gated, documented, and production settings have been verified;
 - paid-access wording distinguishes access without auto-renewal from auto-renewing subscriptions;
 - public tariff prices match the actual application checkout;
 - refund and auto-renewal rules match application behavior;
