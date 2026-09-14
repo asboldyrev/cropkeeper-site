@@ -9,10 +9,10 @@
         <p class="eyebrow"><span></span> Документы</p>
         <h1>Cookies и аналитика</h1>
         <p>Какие данные сайт сохраняет в вашем браузере, зачем нужна аналитика и как управлять своим выбором.</p>
-        <div class="legal-meta">
-            <span class="legal-updated">{{ $legalRevision['label'] }}</span>
+        <div class="legal-meta" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;">
+            <span class="legal-updated" style="margin-top:0;">{{ $legalRevision['label'] }}</span>
             @if (! empty($legalDocument['archive']))
-                <a class="legal-archive-link" href="{{ route('legal.archive.index', ['document' => $documentCode]) }}">Архив редакций</a>
+                <a class="button button--small button--ghost legal-archive-link" href="{{ route('legal.archive.index', ['document' => $documentCode]) }}">Архив редакций</a>
             @endif
         </div>
     </div>
@@ -61,9 +61,9 @@
             </section>
 
             <section id="safety">
-                <h2>6. Какие данные не должны использоваться для аналитики</h2>
-                <p>Cropkeeper ограничивает состав данных, передаваемых в аналитику. В Яндекс Метрику не должны передаваться ваш e-mail, платёжные данные, токены доступа, содержимое данных из приложения и другая информация, которая не нужна для анализа публичного сайта.</p>
-                <p>Яндекс Метрика используется только на публичном сайте cropkeeper.me и не предназначена для анализа содержимого вашей авторизованной части Cropkeeper.</p>
+                <h2>6. Какие данные Cropkeeper не использует для аналитики</h2>
+                <p>В Яндекс Метрику не передаются ваш e-mail, платёжные данные, токены доступа, содержимое данных из приложения и другая информация, которая не нужна для анализа публичного сайта.</p>
+                <p>Яндекс Метрика используется только на публичном сайте cropkeeper.me и не анализирует содержимое вашей авторизованной части Cropkeeper.</p>
             </section>
 
             <section id="changes">
