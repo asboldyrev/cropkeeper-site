@@ -8,7 +8,7 @@ The first landing implementation has been completed and merged into `dev`.
 
 The active release stage is now **legal hardening before production payment-provider onboarding**. Final legal-audit requirements include canonical versioned legal documents, public immutable archives, Yandex Metrika consent, final tariff/subscription wording, cross-repository application/legal synchronization, and release security/license checks.
 
-The current feature branch `feature/legal-document-architecture` implements the first legal-hardening work package: canonical document routes, a registry for revision metadata, public archive routes, the User Agreement and cookies/analytics pages, and retirement of the duplicate active Privacy Policy URL in favor of the Personal Data Processing Policy.
+The first legal-hardening work package introduces canonical document routes, a registry for revision metadata, public archive routes, the User Agreement and cookies/analytics pages, and retirement of the duplicate active Privacy Policy URL in favor of the Personal Data Processing Policy.
 
 See:
 
