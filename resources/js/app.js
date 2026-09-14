@@ -138,7 +138,6 @@ if (analyticsConsent) {
             window.localStorage.setItem(storageKey, JSON.stringify({
                 status,
                 version: consentVersion,
-                updatedAt: new Date().toISOString(),
             }));
         } catch {
             // If localStorage is unavailable, the choice applies only to the current page.
@@ -178,8 +177,8 @@ if (analyticsConsent) {
             return;
         }
 
-        window.ym = window.ym || function (...args) {
-            (window.ym.a = window.ym.a || []).push(args);
+        window.ym = window.ym || function () {
+            (window.ym.a = window.ym.a || []).push(arguments);
         };
         window.ym.l = Date.now();
 
@@ -190,10 +189,15 @@ if (analyticsConsent) {
         document.head.appendChild(script);
 
         window.ym(counterId, 'init', {
+            defer: true,
             clickmap: analyticsConsent.dataset.metrikaClickmap === 'true',
             trackLinks: analyticsConsent.dataset.metrikaTrackLinks === 'true',
             accurateTrackBounce: analyticsConsent.dataset.metrikaAccurateBounce === 'true',
             webvisor: analyticsConsent.dataset.metrikaWebvisor === 'true',
+        });
+
+        window.ym(counterId, 'hit', `${window.location.origin}${window.location.pathname}`, {
+            title: document.title,
         });
     };
 
