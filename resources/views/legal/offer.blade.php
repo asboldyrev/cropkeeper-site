@@ -14,8 +14,12 @@
         <p class="eyebrow"><span></span> Документы</p>
         <h1>Публичная оферта</h1>
         <p>Условия предоставления доступа к платным возможностям Cropkeeper.</p>
-        <span class="legal-updated">{{ $legalRevision['label'] }}</span>
-        <a class="legal-archive-link" href="{{ route('legal.archive.index', ['document' => $documentCode]) }}">Архив редакций</a>
+        <div class="legal-meta">
+            <span class="legal-updated">{{ $legalRevision['label'] }}</span>
+            @if (! empty($legalDocument['archive']))
+                <a class="legal-archive-link" href="{{ route('legal.archive.index', ['document' => $documentCode]) }}">Архив редакций</a>
+            @endif
+        </div>
     </div>
 </section>
 
