@@ -8,6 +8,8 @@ The first landing implementation has been completed and merged into `dev`.
 
 The active release stage is now **legal hardening before production payment-provider onboarding**. Final legal-audit requirements include canonical versioned legal documents, public immutable archives, Yandex Metrika consent, final tariff/subscription wording, cross-repository application/legal synchronization, and release security/license checks.
 
+The current feature branch `feature/legal-document-architecture` implements the first legal-hardening work package: canonical document routes, a registry for revision metadata, public archive routes, the User Agreement and cookies/analytics pages, and retirement of the duplicate active Privacy Policy URL in favor of the Personal Data Processing Policy.
+
 See:
 
 - `docs/PROJECT_STATUS.md` — current checkpoint and release blockers;
@@ -22,8 +24,6 @@ The repository follows gitflow.
 - changes are reviewed/verified before integration into `dev`;
 - `main` is reserved for production-ready promotion;
 - do not commit feature work directly to `dev` or `main`.
-
-The former `feature/payment-provider-landing` branch was merged into `dev` on 2026-09-09 and removed. It is no longer the current working branch.
 
 ## Stack
 
@@ -50,14 +50,26 @@ For development:
 composer dev
 ```
 
-## Current public pages
+## Canonical public legal pages
 
-- `/` — landing, current product capabilities, tariffs, public roadmap, contacts and seller details
-- `/offer` — current first-pass public Offer
-- `/privacy` — current first-pass Privacy Policy
-- `/personal-data` — current first-pass Personal Data Processing Policy
+- `/agreement` — User Agreement
+- `/offer` — Public Offer / paid-access terms
+- `/personal-data` — Personal Data Processing Policy
+- `/cookies` — cookies and Yandex Metrika information
+- `/privacy` — permanent legacy redirect to `/personal-data`
 
-These legal pages are **not yet the final audited document architecture**. The final legal-hardening stage must add the User Agreement, cookies/Yandex Metrika documentation, document revision/version metadata and public immutable archives, and must revise the existing legal texts to match the final Cropkeeper behavior.
+Archive routes use:
+
+```text
+/legal/{document}/archive
+/legal/{document}/archive/{revision}
+```
+
+Document metadata and current/archive revision mappings live in `config/legal.php`. Published archived revisions are repository-backed and must not be edited retroactively.
+
+The former standalone Privacy Policy revision dated 2026-09-05 is preserved as an archived historical document rather than remaining a second active privacy policy.
+
+The Offer and Personal Data Processing Policy still require their next substantive legal-audit revision before production launch; the registry/archive architecture is intentionally separate from that content update.
 
 ## Landing configuration
 
@@ -86,11 +98,11 @@ Seller/contact fields are rendered only when the corresponding configured value 
 
 The tariff matrix is currently static in the site config. This keeps the public landing available independently of the application API. Before production onboarding, displayed paid prices and commercial wording must be reconciled with the actual application checkout.
 
-## Legal-source architecture target
+## Legal-source architecture
 
-`cropkeeper.me` must become the single public source of current legal documents used by both the landing and `asboldyrev/cropkeeper-app`.
+`cropkeeper.me` is the intended single public source of current legal documents used by both the landing and `asboldyrev/cropkeeper-app`.
 
-Target rules:
+Rules:
 
 - stable canonical active-document URLs;
 - public access without authentication;
