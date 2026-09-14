@@ -109,7 +109,7 @@ class PublicPagesTest extends TestCase
             ->assertOk()
             ->assertSee('Пользовательское соглашение')
             ->assertSee('Редакция от 14 сентября 2026 года')
-            ->assertSee('Архив редакций');
+            ->assertDontSee('Архив редакций');
     }
 
     public function test_offer_is_public_and_versioned(): void
@@ -120,7 +120,7 @@ class PublicPagesTest extends TestCase
             ->assertSee('Стоимость и порядок оплаты')
             ->assertSee('Автоматическое продление')
             ->assertSee('Редакция от 5 сентября 2026 года')
-            ->assertSee('Архив редакций')
+            ->assertDontSee('Архив редакций')
             ->assertDontSee('Перед публикацией замените');
     }
 
@@ -138,18 +138,38 @@ class PublicPagesTest extends TestCase
             ->assertSee('Политика обработки персональных данных')
             ->assertSee('Цели и правовые основания обработки')
             ->assertSee('Редакция от 5 сентября 2026 года')
-            ->assertSee('Архив редакций')
+            ->assertDontSee('Архив редакций')
             ->assertDontSee('Рабочий шаблон')
             ->assertDontSee('до production-запуска');
     }
 
-    public function test_cookies_document_is_public_and_versioned(): void
+    public function test_cookies_document_is_public_versioned_and_user_facing(): void
     {
         $this->get('/cookies')
             ->assertOk()
             ->assertSee('Cookies и аналитика')
-            ->assertSee('Яндекс Метрика')
+            ->assertSee('Как вы выбираете, разрешать ли аналитику')
+            ->assertSee('Вы можете в любой момент снова открыть настройки аналитики')
             ->assertSee('Редакция от 14 сентября 2026 года')
+            ->assertDontSee('Архив редакций')
+            ->assertDontSee('Перед включением аналитики Cropkeeper должен');
+    }
+
+    public function test_active_document_shows_archive_link_when_previous_revision_exists(): void
+    {
+        $document = config('legal.documents.agreement');
+        $document['archive'] = [
+            [
+                'revision' => '2026-09-01',
+                'label' => 'Редакция от 1 сентября 2026 года',
+                'effective_from' => '2026-09-01',
+                'view' => 'legal.agreement',
+            ],
+        ];
+        config()->set('legal.documents.agreement', $document);
+
+        $this->get('/agreement')
+            ->assertOk()
             ->assertSee('Архив редакций');
     }
 
