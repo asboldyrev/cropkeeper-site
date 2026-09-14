@@ -22,7 +22,7 @@ Delivered:
 
 ## 2. Final legal-document architecture
 
-Status: next.
+Status: in progress in `feature/legal-document-architecture`.
 
 This stage must be completed before the remaining production/payment-provider stages.
 
@@ -39,6 +39,19 @@ Scope:
 - make the landing the shared public legal source for both site and application;
 - ensure the Personal Data Policy is informative and is not presented as a contract that must be accepted;
 - include separate consent documents only where consent is actually the legal basis.
+
+Current implementation checkpoint on the feature branch:
+
+- canonical `/agreement`, `/offer`, `/personal-data`, `/cookies` routes added;
+- `/privacy` converted to a permanent legacy redirect to `/personal-data`;
+- document/revision registry added in `config/legal.php`;
+- public archive index/revision routes added;
+- superseded Privacy Policy revision dated 2026-09-05 frozen into the archive;
+- User Agreement and cookies/analytics pages added;
+- landing/footer legal navigation switched to canonical active URLs;
+- automated coverage added for version metadata, archives, redirects and missing revisions.
+
+The Offer and Personal Data Processing Policy still need their next substantive audited revisions before stage 2 can be considered complete.
 
 ## 3. Final legal-content synchronization with Cropkeeper behavior
 
