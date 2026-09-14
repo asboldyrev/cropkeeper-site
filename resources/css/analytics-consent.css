@@ -1,0 +1,123 @@
+.footer-link-button {
+    width: fit-content;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+}
+
+.footer-link-button:hover {
+    color: var(--green);
+}
+
+.analytics-consent {
+    position: fixed;
+    inset: auto 20px 20px;
+    z-index: 90;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.analytics-consent[hidden] {
+    display: none;
+}
+
+.analytics-consent.is-visible {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.analytics-consent__card {
+    width: min(940px, 100%);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 32px;
+    align-items: center;
+    padding: 24px 26px;
+    border: 1px solid rgba(207, 216, 207, .96);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, .97);
+    box-shadow: 0 24px 70px rgba(35, 69, 49, .18);
+    backdrop-filter: blur(18px);
+}
+
+.analytics-consent__eyebrow {
+    margin: 0 0 7px;
+    color: var(--green-deep);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.analytics-consent h2 {
+    margin: 0;
+    font-size: 23px;
+    letter-spacing: -.035em;
+}
+
+.analytics-consent__copy > p:not(.analytics-consent__eyebrow) {
+    max-width: 610px;
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.analytics-consent__copy > a {
+    display: inline-block;
+    margin-top: 9px;
+    color: var(--green-deep);
+    font-size: 12px;
+    font-weight: 650;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.analytics-consent__actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.analytics-consent__actions .button {
+    min-height: 44px;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+@media (max-width: 760px) {
+    .analytics-consent {
+        inset: auto 12px 12px;
+    }
+
+    .analytics-consent__card {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 21px;
+        border-radius: 18px;
+    }
+
+    .analytics-consent__actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-consent__actions .button {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .analytics-consent {
+        transition: none;
+    }
+}

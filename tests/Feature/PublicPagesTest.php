@@ -148,6 +148,33 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('Перед включением аналитики Cropkeeper должен');
     }
 
+    public function test_metrika_is_not_embedded_in_server_html_before_consent(): void
+    {
+        config()->set('analytics.metrika.enabled', true);
+        config()->set('analytics.metrika.counter_id', 12345678);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Помочь улучшать Cropkeeper?')
+            ->assertSee('Не разрешать')
+            ->assertSee('Разрешить аналитику')
+            ->assertSee('Настройки аналитики')
+            ->assertSee('data-metrika-id="12345678"', false)
+            ->assertDontSee('mc.yandex.ru/metrika/tag.js');
+    }
+
+    public function test_analytics_consent_ui_is_not_rendered_without_configured_counter(): void
+    {
+        config()->set('analytics.metrika.enabled', false);
+        config()->set('analytics.metrika.counter_id', null);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee('Помочь улучшать Cropkeeper?')
+            ->assertDontSee('Настройки аналитики')
+            ->assertDontSee('data-analytics-consent', false);
+    }
+
     public function test_archive_indexes_are_public_without_authentication(): void
     {
         foreach (['agreement', 'offer', 'personal-data', 'cookies', 'privacy'] as $document) {

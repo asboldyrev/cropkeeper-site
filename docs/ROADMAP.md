@@ -36,34 +36,36 @@ Delivered:
 
 ## 3. Final Offer and Personal Data Policy revision
 
-Status: in progress in `feature/legal-content-revision`.
+Status: completed and merged into `dev`.
 
-Current scope:
+Delivered:
 
-- freeze the previously published Offer dated 2026-09-05 into the public archive;
-- freeze the previously published Personal Data Processing Policy dated 2026-09-05 into the public archive;
-- publish new active revisions dated 2026-09-14;
-- align the Offer with access without auto-renewal, auto-renewing subscriptions, queue/pause semantics, disable/re-purchase rules, recurring-charge notices and the final refund model;
-- align the Personal Data Policy with locality/coordinates, Open-Meteo, payment metadata, support, service mail, analytics consent, export/delete flows and retention rules;
-- keep all public legal wording directed to the user, not to the developer;
-- expand automated coverage for active and archived revisions.
+- previous Offer and Personal Data Processing Policy dated 2026-09-05 frozen into public immutable archives;
+- new active revisions dated 2026-09-14;
+- final paid-access, auto-renewal, queue/pause, recurring-charge notice and refund wording;
+- final locality/coordinates, Open-Meteo, support, service-mail, analytics-consent, export/delete and retention wording;
+- public legal copy kept user-facing rather than developer-facing;
+- regression coverage for active and archived revisions.
 
 ## 4. Consent-gated Yandex Metrika
 
-Status: planned after stage 3.
+Status: in progress in `feature/metrika-consent`.
 
-Scope:
+Current scope:
 
 - explicit accept/reject choice before Metrika initialization;
 - no implied consent through continued browsing;
-- persisted consent state;
-- public mechanism to review/change/withdraw the choice;
-- no initialization on future visits after withdrawal unless consent is granted again;
-- Webvisor review;
-- sensitive-field masking review;
-- URL/query-parameter review;
-- verification that email, user content and other unnecessary personal data do not enter analytics;
-- runtime behavior matching the published Cookies and Personal Data documents.
+- local persisted consent state with a consent-policy version;
+- persistent footer action for reviewing/changing the analytics choice;
+- no Metrika initialization on future visits after rejection/withdrawal until consent is granted again;
+- Metrika script injected only after consent, never embedded in server-rendered HTML;
+- no `noscript` tracking pixel before consent;
+- Webvisor disabled by default;
+- explicit initial pageview sent without query parameters;
+- production counter configured only through `YANDEX_METRIKA_COUNTER_ID`;
+- regression coverage for the server-rendered consent boundary.
+
+Before enabling the real production counter, manually verify the Yandex-side settings for Webvisor, form/field collection, masking and the production origin.
 
 ## 5. Tariff and subscription-copy finalization
 
@@ -129,6 +131,7 @@ Verify:
 - clear dev/production separation;
 - no real user data in development;
 - analytics consent behavior under first visit, accept, reject, withdrawal and later visits;
+- production Yandex counter settings match the legal/privacy model;
 - archived legal revisions cannot be accidentally rewritten by ordinary active-document updates.
 
 ## 9. Open-source license acceptance
@@ -145,7 +148,7 @@ Scope:
 
 ## 10. Merchant onboarding and production promotion
 
-Status: blocked on stages 3–9.
+Status: blocked on stages 4–9.
 
 After legal/security/license gates are complete:
 
