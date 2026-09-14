@@ -14,10 +14,10 @@
         <p class="eyebrow"><span></span> Документы</p>
         <h1>Публичная оферта</h1>
         <p>Условия предоставления доступа к платным возможностям Cropkeeper.</p>
-        <div class="legal-meta">
-            <span class="legal-updated">{{ $legalRevision['label'] }}</span>
+        <div class="legal-meta" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px;">
+            <span class="legal-updated" style="margin-top:0;">{{ $legalRevision['label'] }}</span>
             @if (! empty($legalDocument['archive']))
-                <a class="legal-archive-link" href="{{ route('legal.archive.index', ['document' => $documentCode]) }}">Архив редакций</a>
+                <a class="button button--small button--ghost legal-archive-link" href="{{ route('legal.archive.index', ['document' => $documentCode]) }}">Архив редакций</a>
             @endif
         </div>
     </div>
