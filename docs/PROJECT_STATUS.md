@@ -6,7 +6,9 @@ Last updated: 2026-09-14
 
 Legal hardening of the public Cropkeeper site before production payment-provider onboarding.
 
-The canonical legal-document architecture and the final substantive Offer / Personal Data Processing Policy revision have been reviewed and merged into `dev`. Active work now moves to consent-gated Yandex Metrika in `feature/metrika-consent`.
+The canonical legal-document architecture, final substantive Offer / Personal Data Processing Policy revision, and consent-gated Yandex Metrika runtime have been reviewed and merged into `dev`.
+
+Active work now moves to the public commercial tariff/subscription presentation in `feature/tariff-commercial-copy`.
 
 ## Current repository state
 
@@ -16,46 +18,51 @@ The canonical legal-document architecture and the final substantive Offer / Pers
 - canonical legal pages `/agreement`, `/offer`, `/personal-data`, `/cookies`;
 - permanent legacy redirect `/privacy` → `/personal-data`;
 - repository-backed legal revision registry in `config/legal.php`;
-- public immutable archive routes under `/legal/{document}/archive`;
-- archived Privacy Policy, Offer and Personal Data Processing Policy revisions from 2026-09-05;
+- public immutable legal archives;
 - current Offer and Personal Data Processing Policy revisions dated 2026-09-14;
-- canonical legal navigation in the landing and footer;
+- consent-gated Yandex Metrika runtime;
+- explicit analytics accept/reject and persistent analytics settings;
 - conditional seller/contact rendering;
-- automated feature coverage for public legal pages and archive behavior.
+- automated feature coverage for public legal pages, archives and analytics server-rendering boundaries.
 
 `main` remains at the pre-landing production baseline and must not be promoted until the remaining release gates are complete.
 
-## Analytics-consent work
+## Active tariff-copy work
 
-The active feature branch adds the runtime consent model already described in the public Cookies and Personal Data documents.
+The current feature branch replaces the old ambiguous month/year price switch with explicit commercial variants.
 
-Target behavior:
+For Pro and Premium the public site now distinguishes:
 
-- Yandex Metrika is not included in server-rendered HTML and does not initialize before consent;
-- first-time visitors receive a clear accept/reject choice;
-- continued browsing is not treated as consent;
-- the decision is stored locally together with a consent-policy version;
-- rejection prevents Metrika from loading on future visits;
-- the footer provides a persistent `Настройки аналитики` action so the visitor can change the choice later;
-- withdrawing consent stops the initialized counter and prevents future initialization until consent is given again;
-- Webvisor is disabled by default;
-- automatic initial pageview sending is disabled and the explicit pageview URL excludes query parameters;
-- the production counter ID is supplied through `YANDEX_METRIKA_COUNTER_ID`; with no ID configured, analytics runtime/UI is disabled.
+- `Доступ на 1 месяц без автопродления`;
+- `Доступ на 12 месяцев без автопродления`;
+- `Ежемесячная подписка с автопродлением`;
+- `Годовая подписка с автопродлением`.
 
-Before release, the real Yandex-side counter settings still require a manual acceptance check: Webvisor, form/field collection, masking, URL behavior and the actual production origin.
+Each paid option separately shows:
 
-## Product-copy checkpoint
+- access period;
+- whether auto-renewal is enabled;
+- final configured price.
 
-The next site-specific content stage after analytics consent is commercial tariff/subscription copy.
+The public wording no longer relies on a generic `Месяц / Год` switch that could hide whether the purchase renews automatically.
 
-The final tariff presentation must distinguish clearly between:
+Prices remain environment-driven and intentionally empty until the real production checkout amounts are frozen. Eight explicit environment variables are used so access without auto-renewal and auto-renewing subscriptions cannot accidentally share a price merely because they have the same period.
 
-- access for 1 month without auto-renewal;
-- access for 12 months without auto-renewal;
-- monthly subscription with auto-renewal;
-- annual subscription with auto-renewal.
+The landing continues to advertise only currently usable product functionality. This work does not add unfinished capabilities to Pro or Premium.
 
-The page must show access period and auto-renewal state separately, must not use `разовая подписка`, and must not advertise unfinished functionality.
+## Analytics checkpoint
+
+The consent runtime is implemented and merged.
+
+Before the production counter ID is enabled, a manual Yandex-side acceptance check still remains:
+
+- confirm Webvisor state;
+- verify field/form collection and masking;
+- verify URL/query handling;
+- verify the production origin;
+- confirm no unnecessary personal data is collected.
+
+`YANDEX_METRIKA_COUNTER_ID` must remain empty until this check passes.
 
 ## Cross-repository dependencies
 
@@ -70,17 +77,18 @@ Several final rules are implemented in `cropkeeper-app`, not this repository, bu
 - export archive generation, 48-hour TTL, post-deletion access and optional email link;
 - archive import into a sufficiently empty new account;
 - support workflow and retention;
-- service-email behavior.
+- service-email behavior;
+- checkout offers and prices matching the public tariff presentation.
 
-The site owns canonical public legal documents and archives. The application must link to these URLs rather than maintaining stale copies.
+The site owns canonical public legal documents, archives and public tariff wording. The application must use the same legal URLs and commercial definitions.
 
 ## Release blockers
 
 The site must not be promoted to `main` or submitted as the final merchant-onboarding website until:
 
-1. consent-gated Yandex Metrika runtime is reviewed, tested and merged;
-2. the production Yandex counter settings are manually privacy-checked before enabling the counter ID;
-3. tariff/subscription public copy matches the final commercial model and real checkout prices;
+1. tariff/subscription public copy is reviewed, tested and merged;
+2. real production checkout variants and prices are reconciled with the landing;
+3. the production Yandex counter settings are manually privacy-checked before enabling the counter ID;
 4. CloudTips and obsolete support/payment wording are absent from active content;
 5. all application legal links use canonical site URLs;
 6. cross-repository application behavior materially referenced by the documents is implemented or frozen consistently;
@@ -90,10 +98,12 @@ The site must not be promoted to `main` or submitted as the final merchant-onboa
 
 ## Immediate next work
 
-1. Review and locally verify `feature/metrika-consent`.
+1. Review and locally verify `feature/tariff-commercial-copy`.
 2. Merge it into `dev` after approval.
-3. Finalize tariff/subscription copy.
-4. Continue with canonical-link application integration and remaining release gates.
+3. Reconcile the landing variants/prices with the final `cropkeeper-app` checkout model.
+4. Audit canonical application legal links and remaining cross-repository release behavior.
+5. Complete landing security/privacy acceptance and open-source license acceptance.
+6. Fill production values and proceed to merchant onboarding.
 
 ## Handoff rule
 

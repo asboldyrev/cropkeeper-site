@@ -1,4 +1,5 @@
 import '../css/analytics-consent.css';
+import '../css/tariffs.css';
 
 import {
     ArrowRight,
@@ -52,57 +53,6 @@ if (header) {
 
     syncHeader();
     window.addEventListener('scroll', syncHeader, { passive: true });
-}
-
-const billingSwitch = document.querySelector('[data-billing-switch]');
-
-if (billingSwitch) {
-    const buttons = [...billingSwitch.querySelectorAll('[data-period]')];
-    const priceNodes = [...document.querySelectorAll('[data-plan-price]')];
-
-    const renderPeriod = (period) => {
-        buttons.forEach((button) => {
-            const isActive = button.dataset.period === period;
-            button.classList.toggle('is-active', isActive);
-            button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
-        });
-
-        priceNodes.forEach((node) => {
-            const isFree = node.dataset.free === 'true';
-            const value = node.dataset[period]?.trim();
-            const periodNode = node.parentElement?.querySelector('[data-plan-period]');
-
-            if (isFree) {
-                node.textContent = '0 ₽';
-                node.dataset.empty = 'false';
-                if (periodNode) {
-                    periodNode.textContent = 'бесплатно';
-                }
-                return;
-            }
-
-            if (value) {
-                node.textContent = value;
-                node.dataset.empty = 'false';
-                if (periodNode) {
-                    periodNode.textContent = period === 'monthly' ? 'в месяц' : 'в год';
-                }
-                return;
-            }
-
-            node.textContent = '—';
-            node.dataset.empty = 'true';
-            if (periodNode) {
-                periodNode.textContent = '';
-            }
-        });
-    };
-
-    buttons.forEach((button) => {
-        button.addEventListener('click', () => renderPeriod(button.dataset.period));
-    });
-
-    renderPeriod('monthly');
 }
 
 const analyticsConsent = document.querySelector('[data-analytics-consent]');

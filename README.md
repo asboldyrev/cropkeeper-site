@@ -4,9 +4,9 @@ Public landing for `cropkeeper.me`. The site explains Cropkeeper, publishes tari
 
 ## Current status
 
-The first landing implementation, canonical legal-document architecture, and final Offer / Personal Data Processing Policy revision have been completed and merged into `dev`.
+The first landing implementation, canonical legal-document architecture, final Offer / Personal Data Processing Policy revision, and consent-gated Yandex Metrika runtime have been completed and merged into `dev`.
 
-The active release stage is now **consent-gated Yandex Metrika before production payment-provider onboarding**. Remaining work after analytics consent includes final tariff/subscription copy, cross-repository legal-link/product-behavior synchronization, and release security/license checks.
+The active release stage is now **final commercial tariff/subscription presentation before production payment-provider onboarding**. Remaining work after this stage includes cross-repository legal-link/product-behavior synchronization and release security/license checks.
 
 See:
 
@@ -84,15 +84,21 @@ LANDING_SELLER_ADDRESS="..."
 LANDING_CONTACT_EMAIL="..."
 LANDING_CONTACT_PHONE="..."
 
-LANDING_PRO_MONTHLY_PRICE="... ₽"
-LANDING_PRO_YEARLY_PRICE="... ₽"
-LANDING_PREMIUM_MONTHLY_PRICE="... ₽"
-LANDING_PREMIUM_YEARLY_PRICE="... ₽"
+LANDING_PRO_ACCESS_MONTH_PRICE="... ₽"
+LANDING_PRO_ACCESS_YEAR_PRICE="... ₽"
+LANDING_PRO_SUBSCRIPTION_MONTH_PRICE="... ₽"
+LANDING_PRO_SUBSCRIPTION_YEAR_PRICE="... ₽"
+LANDING_PREMIUM_ACCESS_MONTH_PRICE="... ₽"
+LANDING_PREMIUM_ACCESS_YEAR_PRICE="... ₽"
+LANDING_PREMIUM_SUBSCRIPTION_MONTH_PRICE="... ₽"
+LANDING_PREMIUM_SUBSCRIPTION_YEAR_PRICE="... ₽"
 ```
 
 Seller/contact fields are rendered only when the corresponding configured value is present.
 
-The tariff matrix is currently static in the site config. This keeps the public landing available independently of the application API. Before production onboarding, displayed paid prices and commercial wording must be reconciled with the actual application checkout.
+The tariff matrix is static in the site config so the public landing remains independent of the application API. Pro and Premium each expose four distinct commercial variants: 1/12-month access without auto-renewal and monthly/annual subscriptions with auto-renewal. Each variant has its own environment-driven final price.
+
+Before production onboarding, the variant list and every displayed amount must be reconciled with the actual `cropkeeper-app` checkout. Do not infer or reuse a price between variants unless the checkout intentionally uses the same amount.
 
 ## Yandex Metrika consent
 
@@ -138,7 +144,7 @@ Before submitting `cropkeeper.me` for merchant review and before promoting `dev`
 - CloudTips and obsolete support/payment wording are absent from active content;
 - Yandex Metrika is consent-gated, documented, and production settings have been verified;
 - paid-access wording distinguishes access without auto-renewal from auto-renewing subscriptions;
-- public tariff prices match the actual application checkout;
+- public commercial variants and prices exactly match the actual application checkout;
 - refund and auto-renewal rules match application behavior;
 - application legal links use the same canonical site URLs;
 - production seller/contact values are filled;

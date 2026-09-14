@@ -13,7 +13,7 @@ Delivered:
 - public landing for `cropkeeper.me`;
 - conservative current-feature presentation;
 - Free / Pro / Premium tariff cards;
-- configurable seller/contact values and paid prices;
+- configurable seller/contact values;
 - responsive layout and Lucide package integration;
 - conditional seller/contact rendering;
 - public-page feature tests.
@@ -49,40 +49,40 @@ Delivered:
 
 ## 4. Consent-gated Yandex Metrika
 
-Status: in progress in `feature/metrika-consent`.
+Status: completed and merged into `dev`.
 
-Current scope:
+Delivered:
 
 - explicit accept/reject choice before Metrika initialization;
-- no implied consent through continued browsing;
-- local persisted consent state with a consent-policy version;
-- persistent footer action for reviewing/changing the analytics choice;
-- no Metrika initialization on future visits after rejection/withdrawal until consent is granted again;
-- Metrika script injected only after consent, never embedded in server-rendered HTML;
-- no `noscript` tracking pixel before consent;
+- persisted consent state and persistent settings action;
+- no Metrika script in server-rendered HTML before consent;
+- no future initialization after rejection/withdrawal until consent is granted again;
 - Webvisor disabled by default;
-- explicit initial pageview sent without query parameters;
-- production counter configured only through `YANDEX_METRIKA_COUNTER_ID`;
+- explicit pageview without query parameters;
+- production counter configured through `YANDEX_METRIKA_COUNTER_ID`;
 - regression coverage for the server-rendered consent boundary.
 
-Before enabling the real production counter, manually verify the Yandex-side settings for Webvisor, form/field collection, masking and the production origin.
+Before enabling the real production counter, manually verify Yandex-side Webvisor/form/masking/URL/origin settings.
 
 ## 5. Tariff and subscription-copy finalization
 
-Status: planned.
+Status: in progress in `feature/tariff-commercial-copy`.
 
-Scope:
+Current scope:
 
-- remove the term `разовая подписка` if present;
-- distinguish `доступ на 1 месяц без автопродления`, `доступ на 12 месяцев без автопродления`, `ежемесячная подписка с автопродлением`, and `годовая подписка с автопродлением`;
-- show access period and auto-renewal state separately;
-- reconcile public paid prices with application checkout;
-- publish only functionality actually ready for users;
-- keep internal development wording out of commercial cards.
+- distinguish `Доступ на 1 месяц без автопродления`;
+- distinguish `Доступ на 12 месяцев без автопродления`;
+- distinguish `Ежемесячная подписка с автопродлением`;
+- distinguish `Годовая подписка с автопродлением`;
+- show access period and auto-renewal state separately for every paid option;
+- use separate configurable prices for each commercial variant;
+- remove the ambiguous month/year UI switch;
+- keep unfinished functionality out of commercial cards;
+- reconcile all displayed prices with the final application checkout before production onboarding.
 
 ## 6. Canonical legal links and application integration
 
-Status: planned.
+Status: planned next.
 
 Site work:
 
@@ -104,6 +104,7 @@ Status: planned; application-owned implementation with site-document dependency.
 
 Before public launch, application behavior must match the published documents for:
 
+- actual checkout variants and prices;
 - auto-renewal default-off and explicit enablement;
 - disablement retaining the current paid period until expiry;
 - no reuse/re-enable of the same payment binding after disablement;
@@ -148,7 +149,7 @@ Scope:
 
 ## 10. Merchant onboarding and production promotion
 
-Status: blocked on stages 4–9.
+Status: blocked on stages 5–9.
 
 After legal/security/license gates are complete:
 

@@ -158,13 +158,10 @@
             <div class="section-heading section-heading--split section-heading--plans">
                 <div>
                     <p class="eyebrow"><span></span> Тарифы</p>
-                    <h2>Выберите подходящий объём коллекции семян</h2>
-                    <p>Основные рабочие разделы доступны на всех тарифах. Платные планы увеличивают лимиты списков и позиций семян.</p>
+                    <h2>Выберите тариф и способ оплаты</h2>
+                    <p>Основные рабочие разделы доступны на всех тарифах. Pro и Premium увеличивают лимиты коллекции семян, а платный доступ можно оформить с автопродлением или без него.</p>
                 </div>
-                <div class="billing-switch" data-billing-switch aria-label="Период оплаты">
-                    <button type="button" class="is-active" data-period="monthly">Месяц</button>
-                    <button type="button" data-period="yearly">Год</button>
-                </div>
+                <p class="plans-commercial-note">Для каждого платного варианта отдельно указаны срок доступа, автопродление и итоговая стоимость.</p>
             </div>
 
             <div class="plan-grid">
@@ -178,30 +175,37 @@
                             <h3>{{ $plan['name'] }}</h3>
                             <p>{{ $plan['description'] }}</p>
                         </div>
-                        <div class="plan-card__price">
-                            <strong
-                                data-plan-price
-                                data-monthly="{{ $plan['monthly'] ?? '' }}"
-                                data-yearly="{{ $plan['yearly'] ?? '' }}"
-                                data-free="{{ $plan['code'] === 'free' ? 'true' : 'false' }}"
-                            >
-                                {{ $plan['monthly'] ?: '—' }}
-                            </strong>
-                            <span data-plan-period>
-                                @if ($plan['code'] === 'free')
-                                    {{ $plan['period_note'] }}
-                                @elseif ($plan['monthly'])
-                                    в месяц
-                                @endif
-                            </span>
-                        </div>
+
                         <ul class="plan-card__features">
                             @foreach ($plan['features'] as $feature)
                                 <li><i data-lucide="check" aria-hidden="true"></i><span>{{ $feature }}</span></li>
                             @endforeach
                         </ul>
+
+                        @if ($plan['code'] === 'free')
+                            <div class="plan-card__free-price">
+                                <strong>0 ₽</strong>
+                                <span>без ограничения по сроку</span>
+                            </div>
+                        @else
+                            <div class="purchase-options" aria-label="Варианты оплаты тарифа {{ $plan['name'] }}">
+                                @foreach ($plan['purchase_options'] as $option)
+                                    <div class="purchase-option">
+                                        <div class="purchase-option__head">
+                                            <strong>{{ $option['title'] }}</strong>
+                                            <span>{{ $option['price'] ?: '—' }}</span>
+                                        </div>
+                                        <dl>
+                                            <div><dt>Период доступа</dt><dd>{{ $option['period'] }}</dd></div>
+                                            <div><dt>Автопродление</dt><dd>{{ $option['auto_renewal'] ? 'Да' : 'Нет' }}</dd></div>
+                                        </dl>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+
                         <a class="button {{ $plan['featured'] ? 'button--primary' : 'button--outline' }}" href="{{ config('landing.app_url') }}">
-                            {{ $plan['code'] === 'free' ? 'Начать бесплатно' : 'Выбрать тариф' }}
+                            {{ $plan['code'] === 'free' ? 'Начать бесплатно' : 'Выбрать вариант в приложении' }}
                             <i data-lucide="arrow-right" aria-hidden="true"></i>
                         </a>
                     </article>
@@ -210,7 +214,7 @@
 
             <div class="plans-note">
                 <i data-lucide="shield-check" aria-hidden="true"></i>
-                <p>Платная подписка оформляется в приложении. Перед подтверждением оплаты показываются выбранный тариф, период и итоговая стоимость.</p>
+                <p>Покупка оформляется в приложении. Перед оплатой вы ещё раз увидите тариф, период доступа, наличие автопродления и итоговую стоимость. Автопродление включается только по вашему явному выбору.</p>
             </div>
         </div>
     </section>
