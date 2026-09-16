@@ -27,7 +27,7 @@
 			</div>
 
 			<div class="season-board" aria-label="Пример сезонных записей в Cropkeeper">
-				<img src="{{ asset('/images/app.png') }}" alt="">
+				<img src="{{ asset('/images/app.png') }}" alt="Интерфейс Cropkeeper с данными огородного сезона" fetchpriority="high" decoding="async">
 			</div>
 		</div>
 	</section>
