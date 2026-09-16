@@ -15,6 +15,15 @@ class HomepageSeoMetadataTest extends TestCase
             ->assertSee('<meta name="keywords" content="приложение для огородника, дневник огородника, журнал огородника, учет растений, учет семян, планирование огородного сезона">', false);
     }
 
+    public function test_homepage_hero_image_has_descriptive_alt_and_high_fetch_priority(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('alt="Интерфейс Cropkeeper с данными огородного сезона"', false)
+            ->assertSee('fetchpriority="high"', false)
+            ->assertSee('decoding="async"', false);
+    }
+
     public function test_legal_pages_do_not_inherit_homepage_keywords(): void
     {
         $this->get('/agreement')
