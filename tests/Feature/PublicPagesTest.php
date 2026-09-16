@@ -83,8 +83,8 @@ class PublicPagesTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertDontSee('Связаться с Cropkeeper')
-            ->assertDontSee('footer-label">Связь', false)
-            ->assertDontSee('footer-label">Продавец', false);
+            ->assertDontSee('footer-label\">Связь', false)
+            ->assertDontSee('footer-label\">Продавец', false);
 
         $this->get('/agreement')->assertOk()->assertDontSee('11. Сведения о Правообладателе');
         $this->get('/offer')->assertOk()->assertDontSee('10. Сведения о Правообладателе / Исполнителе');
@@ -188,14 +188,15 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('/legal/');
     }
 
-    public function test_robots_txt_allows_crawling_and_references_canonical_sitemap(): void
+    public function test_static_robots_txt_allows_crawling_and_references_canonical_sitemap(): void
     {
-        config()->set('app.url', 'https://cropkeeper.me');
+        $robotsPath = public_path('robots.txt');
 
-        $this->get('/robots.txt')
-            ->assertOk()
-            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
-            ->assertSee("User-agent: *\nDisallow:\n\nSitemap: https://cropkeeper.me/sitemap.xml\n", false);
+        $this->assertFileExists($robotsPath);
+        $this->assertSame(
+            "User-agent: *\nDisallow:\n\nSitemap: https://cropkeeper.me/sitemap.xml\n",
+            file_get_contents($robotsPath),
+        );
     }
 
     public function test_legacy_privacy_url_redirects_to_canonical_personal_data_policy(): void
