@@ -40,6 +40,7 @@ class LegalDocumentController extends Controller
             'documentCode' => $document,
             'legalDocument' => $definition,
             'archive' => $definition['archive'] ?? [],
+            'seoRobots' => 'noindex, follow',
         ]);
     }
 
@@ -56,6 +57,7 @@ class LegalDocumentController extends Controller
             'legalDocument' => $definition,
             'legalRevision' => $revisionDefinition,
             'isArchivedRevision' => true,
+            'seoRobots' => 'noindex, follow',
         ]);
     }
 
