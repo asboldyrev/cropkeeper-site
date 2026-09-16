@@ -1,11 +1,23 @@
 <!doctype html>
 <html lang="ru">
 <head>
+    @php
+        $canonicalBaseUrl = rtrim((string) config('app.url'), '/');
+        $canonicalPath = request()->getPathInfo();
+        $canonicalUrl = $seoCanonical ?? $canonicalBaseUrl . $canonicalPath;
+        $robotsDirective = $seoRobots ?? 'index, follow';
+        $keywords = trim($__env->yieldContent('keywords'));
+    @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#f5f7f1">
     <meta name="description" content="@yield('description', 'Cropkeeper — сервис для ведения огорода: растения, семена, календарь, задачи и журнал сезона.')">
+    @if ($keywords !== '')
+        <meta name="keywords" content="{{ $keywords }}">
+    @endif
+    <meta name="robots" content="{{ $robotsDirective }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
     <title>@yield('title', 'Cropkeeper — порядок в огородном сезоне')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
