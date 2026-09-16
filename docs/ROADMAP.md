@@ -2,7 +2,7 @@
 
 Last updated: 2026-09-16
 
-This roadmap tracks the release sequence for `asboldyrev/cropkeeper-site`. Detailed legal requirements and acceptance criteria live in `docs/LEGAL_AUDIT_PLAN.md`. The current checkpoint lives in `docs/PROJECT_STATUS.md`. The SEO implementation and handoff source lives in `docs/SEO_PLAN.md`.
+This roadmap tracks the release sequence for `asboldyrev/cropkeeper-site`. Detailed legal requirements and acceptance criteria live in `docs/LEGAL_AUDIT_PLAN.md`. The current checkpoint lives in `docs/PROJECT_STATUS.md`. The SEO implementation and production-acceptance handoff lives in `docs/SEO_PLAN.md`.
 
 ## 1. Initial public landing
 
@@ -85,37 +85,53 @@ Still required before production onboarding:
 
 ## 6. SEO hardening
 
-Status: active in `feature/seo-foundation`.
+Status: technical implementation completed and merged into `dev`; production acceptance pending.
 
-Canonical implementation plan: `docs/SEO_PLAN.md`.
+Canonical handoff: `docs/SEO_PLAN.md`.
 
-Scope:
+Delivered:
 
 - shared SEO metadata architecture in the site layout;
-- absolute self-referencing canonical URLs for indexable public pages;
-- explicit indexation policy for active legal documents and `noindex, follow` for legal archives;
-- application-owned `/sitemap.xml` containing only canonical indexable URLs;
-- sitemap reference in `robots.txt`;
+- absolute self-referencing canonical URLs for indexable pages;
+- canonical URLs independent of tracking/query parameters;
+- `index, follow` for current public pages;
+- `noindex, follow` for legal archive indexes and revisions while keeping them public;
+- application-owned `/sitemap.xml` containing only canonical indexable pages;
+- static `public/robots.txt` referencing the production sitemap;
 - Open Graph and Twitter metadata;
-- initial `public/images/app.png` social preview, with a dedicated 1200x630 card deferred;
-- replace the empty favicon using the Cropkeeper logo assets supplied from the application;
-- optional, concise landing `meta keywords` support as a Yandex-specific supplemental signal;
-- landing JSON-LD for `WebSite`, `SoftwareApplication`, and only supported organization data;
-- do not publish structured paid prices until production checkout values are frozen and reconciled;
-- review hero screenshot alt/accessibility semantics;
+- `public/images/app.png` as the initial social preview;
+- Cropkeeper SVG/ICO/PNG favicon set and Apple Touch Icon;
+- optional landing keywords mechanism and researched landing keyword set;
+- landing JSON-LD for `WebSite` and `SoftwareApplication` without unsupported claims/pricing;
+- meaningful hero screenshot alt text and loading priority;
 - SEO regression tests;
-- keyword research before final title/H1/description/hero-copy adjustments;
-- production acceptance in Google Search Console, Yandex Webmaster, structured-data validators, and PageSpeed Insights.
+- homepage semantic research and targeted metadata refinement centered on `приложение для огородника`;
+- no artificial SEO-text section added;
+- international SEO intentionally deferred.
 
-Content rule for this stage:
+Remaining production acceptance:
 
-- do not add a separate keyword-heavy SEO text block;
-- the expanded user-facing roadmap already provides substantial natural topical coverage;
-- international SEO remains deferred until a genuine second-language version exists.
+- verify final public HTTPS/canonical origin;
+- verify public sitemap, robots, redirect and archive noindex behavior;
+- submit/monitor sitemap in Google Search Console;
+- inspect/index active pages through Google URL Inspection;
+- add/verify sitemap in Yandex Webmaster and run its sitemap validator;
+- validate rendered JSON-LD;
+- verify favicon/social preview from the public origin;
+- run PageSpeed Insights mobile/desktop and review Core Web Vitals;
+- confirm analytics consent/privacy behavior remains unchanged.
+
+Optional future SEO work, not a current release blocker:
+
+- dedicated 1200×630 social card;
+- supported `Organization` / paid `Offer` structured data once production facts are frozen;
+- explicit hero image dimensions after reliable measurement;
+- additional SEO/content pages only from real demand/query data;
+- international SEO when another complete language version exists.
 
 ## 7. Canonical legal links and application integration
 
-Status: planned after the active SEO stage.
+Status: next planned stage after SEO production acceptance, or earlier if release coordination makes it practical.
 
 Site work:
 
@@ -182,7 +198,7 @@ Scope:
 
 ## 11. Merchant onboarding and production promotion
 
-Status: blocked on stages 6–10 and remaining production-value reconciliation.
+Status: blocked on SEO production acceptance, stages 7–10 and remaining production-value reconciliation.
 
 After SEO/legal/security/license gates are complete:
 
@@ -212,4 +228,5 @@ For SEO maintenance:
 - preserve archive `noindex` behavior;
 - validate structured data after material landing/tariff changes;
 - update homepage keyword targeting only from real search-demand/query data, not keyword stuffing;
+- monitor Search Console and Yandex Webmaster after launch;
 - revisit international SEO only when another complete language version is introduced.
