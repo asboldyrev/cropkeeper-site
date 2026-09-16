@@ -8,16 +8,30 @@ Route::view('/', 'landing')->name('home');
 Route::get('/sitemap.xml', function () {
     $canonicalBaseUrl = rtrim((string) config('app.url'), '/');
 
-    return response()
-        ->view('sitemap', [
-            'urls' => [
-                $canonicalBaseUrl.'/',
-                $canonicalBaseUrl.'/agreement',
-                $canonicalBaseUrl.'/offer',
-                $canonicalBaseUrl.'/personal-data',
-                $canonicalBaseUrl.'/cookies',
-            ],
-        ], 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
+    $urls = [
+        $canonicalBaseUrl . '/',
+        $canonicalBaseUrl . '/agreement',
+        $canonicalBaseUrl . '/offer',
+        $canonicalBaseUrl . '/personal-data',
+        $canonicalBaseUrl . '/cookies',
+    ];
+
+    $entries = collect($urls)
+        ->map(fn(string $url) => sprintf(
+            "    <url>\n        <loc>%s</loc>\n    </url>",
+            htmlspecialchars($url, ENT_XML1 | ENT_QUOTES, 'UTF-8'),
+        ))
+        ->implode("\n");
+
+    $xml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{$entries}
+</urlset>
+XML;
+
+    return response($xml, 200)
+        ->header('Content-Type', 'application/xml; charset=UTF-8');
 })->name('sitemap');
 
 Route::get('/agreement', [LegalDocumentController::class, 'agreement'])->name('agreement');
