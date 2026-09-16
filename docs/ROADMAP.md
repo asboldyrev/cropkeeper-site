@@ -2,7 +2,7 @@
 
 Last updated: 2026-09-16
 
-This roadmap tracks the release sequence for `asboldyrev/cropkeeper-site`. Detailed legal requirements and acceptance criteria live in `docs/LEGAL_AUDIT_PLAN.md`. The current checkpoint lives in `docs/PROJECT_STATUS.md`. The SEO implementation and production-acceptance handoff lives in `docs/SEO_PLAN.md`.
+This roadmap tracks the release sequence for `asboldyrev/cropkeeper-site`. Detailed legal requirements and acceptance criteria live in `docs/LEGAL_AUDIT_PLAN.md`. The current checkpoint lives in `docs/PROJECT_STATUS.md`. The completed SEO implementation and production baseline live in `docs/SEO_PLAN.md`.
 
 ## 1. Initial public landing
 
@@ -49,7 +49,7 @@ Delivered:
 
 ## 4. Consent-gated Yandex Metrika
 
-Status: completed and merged into `dev`.
+Status: completed, merged and production-configured.
 
 Delivered:
 
@@ -57,16 +57,18 @@ Delivered:
 - persisted consent state and persistent settings action;
 - no Metrika script in server-rendered HTML before consent;
 - no future initialization after rejection/withdrawal until consent is granted again;
-- Webvisor disabled by default;
+- Webvisor disabled by default in application config;
 - explicit pageview without query parameters;
-- production counter configured through `YANDEX_METRIKA_COUNTER_ID`;
+- production counter configuration;
+- Yandex Metrika configured on the production site;
+- Yandex Webmaster configured;
 - regression coverage for the server-rendered consent boundary.
 
-Before enabling the real production counter, manually verify Yandex-side Webvisor/form/masking/URL/origin settings.
+Google Analytics is intentionally not used and must not be treated as a missing release requirement.
 
 ## 5. Tariff and subscription-copy finalization
 
-Status: implementation present in the current `dev` line; production price reconciliation remains open.
+Status: completed for the current production landing baseline.
 
 Delivered/current behavior:
 
@@ -77,139 +79,108 @@ Delivered/current behavior:
 - show access period and auto-renewal state separately for every paid option;
 - use separate configurable prices for each commercial variant;
 - remove the ambiguous month/year UI switch;
-- keep unfinished functionality out of commercial cards.
+- keep unfinished functionality out of commercial cards;
+- production tariff values and checkout presentation reconciled for the current checkpoint.
 
-Still required before production onboarding:
-
-- reconcile all displayed prices and variants with the final application checkout.
+Any later application pricing/checkout change requires a new site/application reconciliation.
 
 ## 6. SEO hardening
 
-Status: technical implementation completed and merged into `dev`; production acceptance pending.
+Status: completed, deployed and production-accepted.
 
 Canonical handoff: `docs/SEO_PLAN.md`.
 
 Delivered:
 
-- shared SEO metadata architecture in the site layout;
-- absolute self-referencing canonical URLs for indexable pages;
-- canonical URLs independent of tracking/query parameters;
-- `index, follow` for current public pages;
-- `noindex, follow` for legal archive indexes and revisions while keeping them public;
-- application-owned `/sitemap.xml` containing only canonical indexable pages;
-- static `public/robots.txt` referencing the production sitemap;
+- shared SEO metadata architecture;
+- absolute self-referencing canonical URLs;
+- explicit indexation policy and `noindex, follow` legal archives;
+- application-owned `/sitemap.xml`;
+- production sitemap reference in `robots.txt`;
 - Open Graph and Twitter metadata;
-- `public/images/app.png` as the initial social preview;
-- Cropkeeper SVG/ICO/PNG favicon set and Apple Touch Icon;
-- optional landing keywords mechanism and researched landing keyword set;
-- landing JSON-LD for `WebSite` and `SoftwareApplication` without unsupported claims/pricing;
-- meaningful hero screenshot alt text and loading priority;
+- initial `public/images/app.png` social preview;
+- Cropkeeper favicon/touch-icon set;
+- concise landing `meta keywords` support and researched keyword set;
+- landing JSON-LD for `WebSite` and `SoftwareApplication` without unsupported claims;
+- meaningful hero screenshot alt/loading behavior;
 - SEO regression tests;
-- homepage semantic research and targeted metadata refinement centered on `приложение для огородника`;
-- no artificial SEO-text section added;
-- international SEO intentionally deferred.
+- homepage semantic research centered on `приложение для огородника`;
+- Yandex Webmaster production setup;
+- PageSpeed/Lighthouse production acceptance.
 
-Remaining production acceptance:
+Accepted PageSpeed baseline on 2026-09-16:
 
-- verify final public HTTPS/canonical origin;
-- verify public sitemap, robots, redirect and archive noindex behavior;
-- submit/monitor sitemap in Google Search Console;
-- inspect/index active pages through Google URL Inspection;
-- add/verify sitemap in Yandex Webmaster and run its sitemap validator;
-- validate rendered JSON-LD;
-- verify favicon/social preview from the public origin;
-- run PageSpeed Insights mobile/desktop and review Core Web Vitals;
-- confirm analytics consent/privacy behavior remains unchanged.
+- Mobile: Performance 98, Accessibility 96, Best Practices 100, SEO 100, FCP 1.0 s, LCP 1.2 s, TBT 0 ms, CLS 0, Speed Index 3.9 s;
+- Desktop: Performance 98, Accessibility 96, Best Practices 100, SEO 100, FCP 0.3 s, LCP 0.3 s, TBT 0 ms, CLS 0.099, Speed Index 0.4 s.
 
-Optional future SEO work, not a current release blocker:
+Non-blocking future polish is recorded in `docs/SEO_PLAN.md`: render-blocking resources, small image-delivery savings, explicit image dimensions, contrast, and later field Core Web Vitals monitoring once CrUX data exists.
 
-- dedicated 1200×630 social card;
-- supported `Organization` / paid `Offer` structured data once production facts are frozen;
-- explicit hero image dimensions after reliable measurement;
-- additional SEO/content pages only from real demand/query data;
-- international SEO when another complete language version exists.
+International SEO remains deferred until a genuine second-language version exists.
 
 ## 7. Canonical legal links and application integration
 
-Status: next planned stage after SEO production acceptance, or earlier if release coordination makes it practical.
+Status: next active cross-repository verification stage.
 
-Site work:
+Site side is considered complete for the current landing baseline. The remaining work is to inspect the current `asboldyrev/cropkeeper-app` `dev` and verify that application flows use the production site's canonical legal/commercial model.
 
-- verify every public legal link uses a canonical active URL;
-- keep active and archived documents accessible without authentication;
-- preserve conditional rendering for seller/contact details.
+Check in the application:
 
-Cross-repository application work in `asboldyrev/cropkeeper-app`:
+- registration, settings, payment and deletion flows point to canonical site documents;
+- stale independent document copies are not used as authoritative active documents;
+- User Agreement acceptance/re-acceptance behavior matches published rules;
+- material Offer-change confirmation works where required;
+- material Personal Data Policy changes are notified without treating the policy as a contract.
 
-- point registration, settings, payment and deletion flows to canonical site documents;
-- remove or stop using stale independent document copies;
-- implement User Agreement acceptance/re-acceptance;
-- implement material Offer-change confirmation before a future charge under changed terms;
-- notify users about material Personal Data Policy changes without treating the policy as a contract.
+Do not assume older roadmap items are still missing; verify the current application code first.
 
 ## 8. Cross-repository product/legal behavior gate
 
-Status: planned; application-owned implementation with site-document dependency.
+Status: open; this is the main remaining release gate.
 
-Before public launch, application behavior must match the published documents for:
+Verify the current application behavior against the production site for:
 
 - actual checkout variants and prices;
 - auto-renewal default-off and explicit enablement;
 - disablement retaining the current paid period until expiry;
-- no reuse/re-enable of the same payment binding after disablement;
-- new purchase/payment flow required for future auto-renewal;
+- no reuse/re-enable of the same payment binding after disablement where prohibited by the agreed flow;
+- new purchase/payment flow required for future auto-renewal where applicable;
 - old-price-loss warning;
 - recurring-charge notice at least 3 calendar days before charge;
 - proportional refunds and frozen periods;
 - 12-hour current-period threshold and upward kopeck rounding;
 - account deletion;
 - export archive generation, 48-hour TTL, post-deletion access until original expiry, optional email link and automatic destruction;
-- archive import into an otherwise empty account;
+- archive import into an otherwise sufficiently empty account;
 - support workflow and retention;
 - service-email categories;
 - material document-change notifications and required confirmations.
 
+The goal is to identify only real remaining differences in the current `cropkeeper-app`, not to repeat already completed work.
+
 ## 9. Landing security and privacy acceptance
 
-Status: planned before release.
+Status: completed for the current production landing baseline.
 
-Verify:
+Accepted checkpoint includes the production HTTPS/security/privacy setup, dev/production separation, analytics consent behavior and production analytics/privacy configuration.
 
-- HTTPS and HSTS ownership/configuration;
-- appropriate cookie attributes;
-- no server secrets in frontend output/build;
-- clear dev/production separation;
-- no real user data in development;
-- analytics consent behavior under first visit, accept, reject, withdrawal and later visits;
-- production Yandex counter settings match the legal/privacy model;
-- archived legal revisions cannot be accidentally rewritten by ordinary active-document updates.
+Reopen this stage only if infrastructure, cookie behavior, analytics collection or legal/privacy requirements materially change.
 
 ## 10. Open-source license acceptance
 
-Status: planned before release.
+Status: completed for the current landing release baseline.
 
-Scope:
+Dependency/license review is considered closed for the current site release. Re-run it after material Composer/npm dependency changes or before a later release if dependency composition changes substantially.
 
-- inventory Composer and npm dependencies;
-- identify licenses;
-- review AGPL/GPL/LGPL dependencies separately;
-- add required notices/license texts/attributions where applicable;
-- record the accepted result for the release.
+## 11. Final release / merchant / promotion flow
 
-## 11. Merchant onboarding and production promotion
+Status: pending only on the remaining cross-repository application gate and normal final release verification.
 
-Status: blocked on SEO production acceptance, stages 7–10 and remaining production-value reconciliation.
+The landing itself is already published to production and accepted for the current baseline. After stages 7–8 are green:
 
-After SEO/legal/security/license gates are complete:
-
-- fill production seller details and contacts;
-- fill actual paid tariff prices;
-- deploy the public `cropkeeper.me` candidate;
-- perform final public smoke checks;
-- complete SEO production validation and submit sitemaps to search-engine webmaster tools;
-- submit the site for production payment-provider merchant onboarding;
-- coordinate provider-requested wording changes without weakening the legal-audit requirements;
-- only after acceptance and final verification, promote the approved release from `dev` to `main`.
+- perform final application/site smoke verification;
+- confirm no last-minute legal/commercial divergence exists;
+- complete any remaining merchant/provider operational step, if applicable;
+- promote/update release branches according to the project's normal release process.
 
 ## Post-release maintenance
 
@@ -228,5 +199,8 @@ For SEO maintenance:
 - preserve archive `noindex` behavior;
 - validate structured data after material landing/tariff changes;
 - update homepage keyword targeting only from real search-demand/query data, not keyword stuffing;
-- monitor Search Console and Yandex Webmaster after launch;
+- monitor Yandex Webmaster;
+- optionally connect Google Search Console if Google-specific diagnostics are desired;
+- monitor Core Web Vitals when sufficient field data becomes available;
+- preserve or improve the accepted PageSpeed baseline;
 - revisit international SEO only when another complete language version is introduced.
