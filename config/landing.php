@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'app_url' => env('CROPKEEPER_APP_URL', 'https://app.cropkeeper.me'),
+    'app_url' => env('CROPKEEPER_APP_URL'),
 
     'seller' => [
         'name' => env('LANDING_SELLER_NAME'), // [УКАЖИТЕ ФИО / НАИМЕНОВАНИЕ ПРОДАВЦА]
