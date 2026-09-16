@@ -8,12 +8,19 @@
         $robotsDirective = $seoRobots ?? 'index, follow';
         $defaultTitle = 'Cropkeeper — порядок в огородном сезоне';
         $defaultDescription = 'Cropkeeper — сервис для ведения огорода: растения, семена, календарь, задачи и журнал сезона.';
-        $pageTitle = trim($__env->yieldContent('title')) ?: $defaultTitle;
-        $pageDescription = trim($__env->yieldContent('description')) ?: $defaultDescription;
-        $keywords = trim($__env->yieldContent('keywords'));
+        $isHomepage = request()->routeIs('home');
+        $pageTitle = $isHomepage
+            ? 'Cropkeeper — приложение для огородника и дневник сезона'
+            : (trim($__env->yieldContent('title')) ?: $defaultTitle);
+        $pageDescription = $isHomepage
+            ? 'Cropkeeper — приложение для огородника: ведите растения и посадки, семена, задачи, календарь и журнал наблюдений в одном месте.'
+            : (trim($__env->yieldContent('description')) ?: $defaultDescription);
+        $keywords = $isHomepage
+            ? 'приложение для огородника, дневник огородника, журнал огородника, учет растений, учет семян, планирование огородного сезона'
+            : trim($__env->yieldContent('keywords'));
         $socialImage = $seoImage ?? $canonicalBaseUrl . '/images/app.png';
         $openGraphType = $seoOpenGraphType ?? 'website';
-        $structuredData = request()->routeIs('home') ? [
+        $structuredData = $isHomepage ? [
             '@context' => 'https://schema.org',
             '@graph' => [
                 [
