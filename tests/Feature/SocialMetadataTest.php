@@ -15,14 +15,14 @@ class SocialMetadataTest extends TestCase
             ->assertSee('<meta property="og:site_name" content="Cropkeeper">', false)
             ->assertSee('<meta property="og:locale" content="ru_RU">', false)
             ->assertSee('<meta property="og:type" content="website">', false)
-            ->assertSee('<meta property="og:title" content="Cropkeeper — порядок в огородном сезоне">', false)
-            ->assertSee('<meta property="og:description" content="Cropkeeper помогает вести растения, семена, календарь, задачи и журнал наблюдений в одном месте.">', false)
+            ->assertSee('<meta property="og:title" content="Cropkeeper — приложение для огородника и дневник сезона">', false)
+            ->assertSee('<meta property="og:description" content="Cropkeeper — приложение для огородника: ведите растения и посадки, семена, задачи, календарь и журнал наблюдений в одном месте.">', false)
             ->assertSee('<meta property="og:url" content="https://cropkeeper.me/">', false)
             ->assertSee('<meta property="og:image" content="https://cropkeeper.me/images/app.png">', false)
             ->assertSee('<meta property="og:image:alt" content="Интерфейс Cropkeeper">', false)
             ->assertSee('<meta name="twitter:card" content="summary_large_image">', false)
-            ->assertSee('<meta name="twitter:title" content="Cropkeeper — порядок в огородном сезоне">', false)
-            ->assertSee('<meta name="twitter:description" content="Cropkeeper помогает вести растения, семена, календарь, задачи и журнал наблюдений в одном месте.">', false)
+            ->assertSee('<meta name="twitter:title" content="Cropkeeper — приложение для огородника и дневник сезона">', false)
+            ->assertSee('<meta name="twitter:description" content="Cropkeeper — приложение для огородника: ведите растения и посадки, семена, задачи, календарь и журнал наблюдений в одном месте.">', false)
             ->assertSee('<meta name="twitter:image" content="https://cropkeeper.me/images/app.png">', false);
     }
 
