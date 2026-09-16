@@ -1,8 +1,8 @@
 # Cropkeeper Site roadmap
 
-Last updated: 2026-09-14
+Last updated: 2026-09-16
 
-This roadmap tracks the release sequence for `asboldyrev/cropkeeper-site`. Detailed legal requirements and acceptance criteria live in `docs/LEGAL_AUDIT_PLAN.md`. The current checkpoint lives in `docs/PROJECT_STATUS.md`.
+This roadmap tracks the release sequence for `asboldyrev/cropkeeper-site`. Detailed legal requirements and acceptance criteria live in `docs/LEGAL_AUDIT_PLAN.md`. The current checkpoint lives in `docs/PROJECT_STATUS.md`. The SEO implementation and handoff source lives in `docs/SEO_PLAN.md`.
 
 ## 1. Initial public landing
 
@@ -66,9 +66,9 @@ Before enabling the real production counter, manually verify Yandex-side Webviso
 
 ## 5. Tariff and subscription-copy finalization
 
-Status: in progress in `feature/tariff-commercial-copy`.
+Status: implementation present in the current `dev` line; production price reconciliation remains open.
 
-Current scope:
+Delivered/current behavior:
 
 - distinguish `Доступ на 1 месяц без автопродления`;
 - distinguish `Доступ на 12 месяцев без автопродления`;
@@ -77,12 +77,45 @@ Current scope:
 - show access period and auto-renewal state separately for every paid option;
 - use separate configurable prices for each commercial variant;
 - remove the ambiguous month/year UI switch;
-- keep unfinished functionality out of commercial cards;
-- reconcile all displayed prices with the final application checkout before production onboarding.
+- keep unfinished functionality out of commercial cards.
 
-## 6. Canonical legal links and application integration
+Still required before production onboarding:
 
-Status: planned next.
+- reconcile all displayed prices and variants with the final application checkout.
+
+## 6. SEO hardening
+
+Status: active in `feature/seo-foundation`.
+
+Canonical implementation plan: `docs/SEO_PLAN.md`.
+
+Scope:
+
+- shared SEO metadata architecture in the site layout;
+- absolute self-referencing canonical URLs for indexable public pages;
+- explicit indexation policy for active legal documents and `noindex, follow` for legal archives;
+- application-owned `/sitemap.xml` containing only canonical indexable URLs;
+- sitemap reference in `robots.txt`;
+- Open Graph and Twitter metadata;
+- initial `public/images/app.png` social preview, with a dedicated 1200x630 card deferred;
+- replace the empty favicon using the Cropkeeper logo assets supplied from the application;
+- optional, concise landing `meta keywords` support as a Yandex-specific supplemental signal;
+- landing JSON-LD for `WebSite`, `SoftwareApplication`, and only supported organization data;
+- do not publish structured paid prices until production checkout values are frozen and reconciled;
+- review hero screenshot alt/accessibility semantics;
+- SEO regression tests;
+- keyword research before final title/H1/description/hero-copy adjustments;
+- production acceptance in Google Search Console, Yandex Webmaster, structured-data validators, and PageSpeed Insights.
+
+Content rule for this stage:
+
+- do not add a separate keyword-heavy SEO text block;
+- the expanded user-facing roadmap already provides substantial natural topical coverage;
+- international SEO remains deferred until a genuine second-language version exists.
+
+## 7. Canonical legal links and application integration
+
+Status: planned after the active SEO stage.
 
 Site work:
 
@@ -98,7 +131,7 @@ Cross-repository application work in `asboldyrev/cropkeeper-app`:
 - implement material Offer-change confirmation before a future charge under changed terms;
 - notify users about material Personal Data Policy changes without treating the policy as a contract.
 
-## 7. Cross-repository product/legal behavior gate
+## 8. Cross-repository product/legal behavior gate
 
 Status: planned; application-owned implementation with site-document dependency.
 
@@ -120,7 +153,7 @@ Before public launch, application behavior must match the published documents fo
 - service-email categories;
 - material document-change notifications and required confirmations.
 
-## 8. Landing security and privacy acceptance
+## 9. Landing security and privacy acceptance
 
 Status: planned before release.
 
@@ -135,7 +168,7 @@ Verify:
 - production Yandex counter settings match the legal/privacy model;
 - archived legal revisions cannot be accidentally rewritten by ordinary active-document updates.
 
-## 9. Open-source license acceptance
+## 10. Open-source license acceptance
 
 Status: planned before release.
 
@@ -147,16 +180,17 @@ Scope:
 - add required notices/license texts/attributions where applicable;
 - record the accepted result for the release.
 
-## 10. Merchant onboarding and production promotion
+## 11. Merchant onboarding and production promotion
 
-Status: blocked on stages 5–9.
+Status: blocked on stages 6–10 and remaining production-value reconciliation.
 
-After legal/security/license gates are complete:
+After SEO/legal/security/license gates are complete:
 
 - fill production seller details and contacts;
 - fill actual paid tariff prices;
 - deploy the public `cropkeeper.me` candidate;
 - perform final public smoke checks;
+- complete SEO production validation and submit sitemaps to search-engine webmaster tools;
 - submit the site for production payment-provider merchant onboarding;
 - coordinate provider-requested wording changes without weakening the legal-audit requirements;
 - only after acceptance and final verification, promote the approved release from `dev` to `main`.
@@ -171,3 +205,11 @@ For every new legal revision:
 - update the archive registry;
 - trigger the appropriate application notification/re-acceptance flow when the change is material;
 - never edit an archived revision retroactively.
+
+For SEO maintenance:
+
+- keep sitemap URLs aligned with canonical/indexable routes;
+- preserve archive `noindex` behavior;
+- validate structured data after material landing/tariff changes;
+- update homepage keyword targeting only from real search-demand/query data, not keyword stuffing;
+- revisit international SEO only when another complete language version is introduced.
