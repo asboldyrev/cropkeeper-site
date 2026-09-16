@@ -1,58 +1,153 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Cropkeeper Site
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Public landing for `cropkeeper.me`. The site explains Cropkeeper, publishes tariffs and legal documents, and provides the public information required for production payment-provider onboarding.
 
-## About Laravel
+## Current status
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The first landing implementation, canonical legal-document architecture, final Offer / Personal Data Processing Policy revision, and consent-gated Yandex Metrika runtime have been completed and merged into `dev`.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The active release stage is now **final commercial tariff/subscription presentation before production payment-provider onboarding**. Remaining work after this stage includes cross-repository legal-link/product-behavior synchronization and release security/license checks.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+See:
 
-## Learning Laravel
+- `docs/PROJECT_STATUS.md` — current checkpoint and release blockers;
+- `docs/ROADMAP.md` — ordered remaining release stages;
+- `docs/LEGAL_AUDIT_PLAN.md` — detailed implementation plan and acceptance criteria.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Branching
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The repository follows gitflow.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- feature/documentation work branches from the current `dev`;
+- changes are reviewed/verified before integration into `dev`;
+- `main` is reserved for production-ready promotion;
+- do not commit feature work directly to `dev` or `main`.
 
-## Agentic Development
+## Stack
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- Laravel 13
+- Blade
+- Tailwind CSS 4 / custom CSS
+- Vite
+- Lucide (`lucide` npm package; no icon CDN)
+
+## Local setup
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
+npm install
+npm run build
+composer test
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+For development:
 
-## Contributing
+```bash
+composer dev
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Canonical public legal pages
 
-## Code of Conduct
+- `/agreement` — User Agreement
+- `/offer` — Public Offer / paid-access terms
+- `/personal-data` — Personal Data Processing Policy
+- `/cookies` — cookies and Yandex Metrika information
+- `/privacy` — permanent legacy redirect to `/personal-data`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Archive routes use:
 
-## Security Vulnerabilities
+```text
+/legal/{document}/archive
+/legal/{document}/archive/{revision}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Document metadata and current/archive revision mappings live in `config/legal.php`. Published archived revisions are repository-backed and must not be edited retroactively.
 
-## License
+## Landing configuration
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Public content that must be easy to change without editing templates lives in `config/landing.php`.
+
+Production-specific values are supplied through `.env`:
+
+```dotenv
+CROPKEEPER_APP_URL=https://app.cropkeeper.me
+
+YANDEX_METRIKA_COUNTER_ID=
+
+LANDING_SELLER_NAME="..."
+LANDING_SELLER_STATUS="..."
+LANDING_SELLER_INN="..."
+LANDING_SELLER_OGRN="..."
+LANDING_SELLER_ADDRESS="..."
+LANDING_CONTACT_EMAIL="..."
+LANDING_CONTACT_PHONE="..."
+
+LANDING_PRO_ACCESS_MONTH_PRICE="... ₽"
+LANDING_PRO_ACCESS_YEAR_PRICE="... ₽"
+LANDING_PRO_SUBSCRIPTION_MONTH_PRICE="... ₽"
+LANDING_PRO_SUBSCRIPTION_YEAR_PRICE="... ₽"
+LANDING_PREMIUM_ACCESS_MONTH_PRICE="... ₽"
+LANDING_PREMIUM_ACCESS_YEAR_PRICE="... ₽"
+LANDING_PREMIUM_SUBSCRIPTION_MONTH_PRICE="... ₽"
+LANDING_PREMIUM_SUBSCRIPTION_YEAR_PRICE="... ₽"
+```
+
+Seller/contact fields are rendered only when the corresponding configured value is present.
+
+The tariff matrix is static in the site config so the public landing remains independent of the application API. Pro and Premium each expose four distinct commercial variants: 1/12-month access without auto-renewal and monthly/annual subscriptions with auto-renewal. Each variant has its own environment-driven final price.
+
+Before production onboarding, the variant list and every displayed amount must be reconciled with the actual `cropkeeper-app` checkout. Do not infer or reuse a price between variants unless the checkout intentionally uses the same amount.
+
+## Yandex Metrika consent
+
+Metrika is configured through `YANDEX_METRIKA_COUNTER_ID`. If the value is empty, the analytics consent UI and Metrika integration are not rendered.
+
+When a counter ID is configured:
+
+- the initial server-rendered HTML contains no Yandex Metrika script or `noscript` tracking pixel;
+- the visitor must explicitly choose whether analytics is allowed;
+- accept/reject state is stored in localStorage together with the consent-policy version;
+- rejection prevents Metrika initialization on later page loads;
+- the footer exposes `Настройки аналитики`, allowing the visitor to change the choice later;
+- withdrawing consent calls the Metrika `destruct` method, removes the dynamically injected script, and clears known first-party Metrika cookies where possible;
+- Webvisor is disabled by default;
+- automatic initial pageview sending is disabled and the site sends a pageview URL without query parameters after consent.
+
+Analytics settings live in `config/analytics.php`. Before enabling a production counter, verify the actual Yandex-side counter settings as part of privacy acceptance.
+
+## Legal-source architecture
+
+`cropkeeper.me` is the single public source of current legal documents used by both the landing and `asboldyrev/cropkeeper-app`.
+
+Rules:
+
+- stable canonical active-document URLs;
+- public access without authentication;
+- explicit revision/version metadata;
+- public archive index for every legal document;
+- immutable archived revisions;
+- application links point to the same canonical site URLs;
+- Personal Data Processing Policy is not treated as a contract requiring acceptance;
+- explicit consent is requested only where consent is actually the legal basis;
+- Yandex Metrika loads only after explicit analytics consent.
+
+See `docs/LEGAL_AUDIT_PLAN.md` for the full target design.
+
+## Production onboarding gate
+
+Before submitting `cropkeeper.me` for merchant review and before promoting `dev` to `main`, confirm all of the following:
+
+- final current legal documents are published at canonical public URLs;
+- every superseded legal revision is preserved in the public immutable archive;
+- CloudTips and obsolete support/payment wording are absent from active content;
+- Yandex Metrika is consent-gated, documented, and production settings have been verified;
+- paid-access wording distinguishes access without auto-renewal from auto-renewing subscriptions;
+- public commercial variants and prices exactly match the actual application checkout;
+- refund and auto-renewal rules match application behavior;
+- application legal links use the same canonical site URLs;
+- production seller/contact values are filled;
+- security acceptance passes;
+- open-source license acceptance passes;
+- the production URL is public and all legal/archive/consent flows pass smoke testing.
