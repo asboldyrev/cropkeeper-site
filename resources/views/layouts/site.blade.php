@@ -6,23 +6,43 @@
         $canonicalPath = request()->getPathInfo();
         $canonicalUrl = $seoCanonical ?? $canonicalBaseUrl . $canonicalPath;
         $robotsDirective = $seoRobots ?? 'index, follow';
+        $defaultTitle = 'Cropkeeper — порядок в огородном сезоне';
+        $defaultDescription = 'Cropkeeper — сервис для ведения огорода: растения, семена, календарь, задачи и журнал сезона.';
+        $pageTitle = trim($__env->yieldContent('title')) ?: $defaultTitle;
+        $pageDescription = trim($__env->yieldContent('description')) ?: $defaultDescription;
         $keywords = trim($__env->yieldContent('keywords'));
+        $socialImage = $seoImage ?? $canonicalBaseUrl . '/images/app.png';
+        $openGraphType = $seoOpenGraphType ?? 'website';
     @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light">
     <meta name="theme-color" content="#f5f7f1">
-    <meta name="description" content="@yield('description', 'Cropkeeper — сервис для ведения огорода: растения, семена, календарь, задачи и журнал сезона.')">
+    <meta name="description" content="{{ $pageDescription }}">
     @if ($keywords !== '')
         <meta name="keywords" content="{{ $keywords }}">
     @endif
     <meta name="robots" content="{{ $robotsDirective }}">
     <link rel="canonical" href="{{ $canonicalUrl }}">
+
+    <meta property="og:site_name" content="Cropkeeper">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:type" content="{{ $openGraphType }}">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $pageDescription }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:image" content="{{ $socialImage }}">
+    <meta property="og:image:alt" content="Интерфейс Cropkeeper">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $pageDescription }}">
+    <meta name="twitter:image" content="{{ $socialImage }}">
+
     <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="icon" href="{{ asset('favicon-32x32.png') }}" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}" sizes="180x180">
-    <title>@yield('title', 'Cropkeeper — порядок в огородном сезоне')</title>
+    <title>{{ $pageTitle }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
