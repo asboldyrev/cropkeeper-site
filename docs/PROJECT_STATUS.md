@@ -1,14 +1,14 @@
 # Current project status
 
-Last updated: 2026-09-14
+Last updated: 2026-09-16
 
 ## Active stage
 
-Legal hardening of the public Cropkeeper site before production payment-provider onboarding.
+SEO hardening of the public Cropkeeper site is the immediate active task before continuing the remaining production-release gates.
 
-The canonical legal-document architecture, final substantive Offer / Personal Data Processing Policy revision, and consent-gated Yandex Metrika runtime have been reviewed and merged into `dev`.
+The canonical legal-document architecture, final substantive Offer / Personal Data Processing Policy revision, consent-gated Yandex Metrika runtime, explicit tariff variants, and expanded user-facing product roadmap are present in the current `dev` line.
 
-Active work now moves to the public commercial tariff/subscription presentation in `feature/tariff-commercial-copy`.
+The complete SEO audit decisions, implementation order, and restart checklist are recorded in `docs/SEO_PLAN.md`. Treat that document as the canonical handoff source for the SEO phase.
 
 ## Current repository state
 
@@ -23,15 +23,43 @@ Active work now moves to the public commercial tariff/subscription presentation 
 - consent-gated Yandex Metrika runtime;
 - explicit analytics accept/reject and persistent analytics settings;
 - conditional seller/contact rendering;
+- explicit paid-access variants with and without auto-renewal;
+- expanded roadmap copy describing current and planned Cropkeeper capabilities;
 - automated feature coverage for public legal pages, archives and analytics server-rendering boundaries.
 
 `main` remains at the pre-landing production baseline and must not be promoted until the remaining release gates are complete.
 
-## Active tariff-copy work
+## SEO checkpoint
 
-The current feature branch replaces the old ambiguous month/year price switch with explicit commercial variants.
+The SEO audit of the current `dev` identified a sound server-rendered baseline but incomplete search-engine metadata and indexing infrastructure.
 
-For Pro and Premium the public site now distinguishes:
+Agreed work includes:
+
+- shared SEO metadata support in the site layout;
+- self-referencing absolute canonicals for indexable public pages;
+- explicit `noindex, follow` for legal archive indexes and archived revisions while keeping them publicly accessible;
+- application-owned `/sitemap.xml` containing only canonical indexable pages;
+- a sitemap reference in `robots.txt`;
+- Open Graph and Twitter metadata;
+- initial use of `public/images/app.png` as the social preview image, with a dedicated 1200x630 card deferred;
+- replacement of the current empty favicon with Cropkeeper application logo assets supplied by the user (`logo.svg` / `logo.png`) and compatible favicon/touch-icon markup;
+- optional `meta keywords` support for the landing as a Yandex-oriented supplemental signal, with final phrases chosen only after keyword research;
+- JSON-LD for the landing (`WebSite`, `SoftwareApplication`, and only supported organization data);
+- no paid structured-data prices until production checkout prices are frozen and reconciled;
+- explicit review of the hero screenshot `alt` instead of changing it mechanically;
+- SEO regression tests;
+- later Wordstat/SERP research followed by targeted title/H1/description/hero refinements;
+- production validation in Google Search Console, Yandex Webmaster, structured-data validators, and PageSpeed Insights.
+
+The expanded landing roadmap already provides substantial natural topical coverage. Do not add a separate keyword-heavy "SEO text" section during this phase.
+
+International SEO is intentionally deferred until a real second-language version exists.
+
+See `docs/SEO_PLAN.md` for the full rationale, target URL policy, acceptance criteria, and new-chat restart sequence.
+
+## Commercial/tariff checkpoint
+
+For Pro and Premium the public site distinguishes:
 
 - `Доступ на 1 месяц без автопродления`;
 - `Доступ на 12 месяцев без автопродления`;
@@ -44,11 +72,9 @@ Each paid option separately shows:
 - whether auto-renewal is enabled;
 - final configured price.
 
-The public wording no longer relies on a generic `Месяц / Год` switch that could hide whether the purchase renews automatically.
-
 Prices remain environment-driven and intentionally empty until the real production checkout amounts are frozen. Eight explicit environment variables are used so access without auto-renewal and auto-renewing subscriptions cannot accidentally share a price merely because they have the same period.
 
-The landing continues to advertise only currently usable product functionality. This work does not add unfinished capabilities to Pro or Premium.
+The landing continues to advertise only currently usable product functionality in commercial cards. Future capabilities are presented separately in the roadmap.
 
 ## Analytics checkpoint
 
@@ -86,7 +112,7 @@ The site owns canonical public legal documents, archives and public tariff wordi
 
 The site must not be promoted to `main` or submitted as the final merchant-onboarding website until:
 
-1. tariff/subscription public copy is reviewed, tested and merged;
+1. SEO foundation and production SEO acceptance are complete;
 2. real production checkout variants and prices are reconciled with the landing;
 3. the production Yandex counter settings are manually privacy-checked before enabling the counter ID;
 4. CloudTips and obsolete support/payment wording are absent from active content;
@@ -98,13 +124,15 @@ The site must not be promoted to `main` or submitted as the final merchant-onboa
 
 ## Immediate next work
 
-1. Review and locally verify `feature/tariff-commercial-copy`.
-2. Merge it into `dev` after approval.
-3. Reconcile the landing variants/prices with the final `cropkeeper-app` checkout model.
-4. Audit canonical application legal links and remaining cross-repository release behavior.
-5. Complete landing security/privacy acceptance and open-source license acceptance.
-6. Fill production values and proceed to merchant onboarding.
+1. Complete the documentation-only SEO checkpoint in `feature/seo-foundation`.
+2. Before application-code changes, satisfy the current `AGENTS.md` Laravel Boost bootstrap requirement in a proper local repository environment and reread the generated instructions.
+3. Implement the SEO plan in the order defined in `docs/SEO_PLAN.md`: metadata architecture, canonical/indexation policy, sitemap/robots, favicons, social metadata, optional keywords, structured data, image decision, and regression tests.
+4. Perform keyword research and only then make targeted homepage copy adjustments.
+5. Run production SEO acceptance after deployment.
+6. Return to the remaining commercial, cross-repository, security/privacy, license, and merchant-onboarding gates.
 
 ## Handoff rule
 
 Update this file when the active feature is merged, a release gate closes, the active stage changes, or cross-repository behavior referenced by the legal texts changes.
+
+For SEO-specific continuation, also update `docs/SEO_PLAN.md` whenever an agreed SEO decision, implementation order, or acceptance criterion changes.
