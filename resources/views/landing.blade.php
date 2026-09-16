@@ -169,9 +169,9 @@
 	<section class="section roadmap-section" id="roadmap">
 		<div class="shell roadmap-layout">
 			<div class="roadmap-intro">
-				<p class="eyebrow"><span></span> Что дальше</p>
-				<h2>Cropkeeper будет расти вместе с реальными сезонными сценариями</h2>
-				<p>В первую очередь — инструменты, которые сокращают повторяющуюся ручную работу и помогают сохранять больше полезной истории по сезону.</p>
+				<p class="eyebrow"><span></span> Развитие Cropkeeper</p>
+				<h2>Что уже помогает вести сезон — и что появится дальше</h2>
+				<p>Roadmap показывает только полезные для огородника возможности: доступные сейчас и направления, которые находятся в развитии.</p>
 			</div>
 
 			<div class="roadmap-list">
@@ -183,9 +183,12 @@
 						<div class="roadmap-item__content">
 							<span class="roadmap-item__status">{{ $stage['status'] }}</span>
 							<h3>{{ $stage['title'] }}</h3>
-							<ul>
+							<ul class="plan-card__features">
 								@foreach ($stage['items'] as $item)
-									<li>{{ $item }}</li>
+									<li>
+										<i data-lucide="{{ $item['icon'] }}" aria-hidden="true"></i>
+										<span><strong>{{ $item['title'] }}</strong><br>{{ $item['description'] }}</span>
+									</li>
 								@endforeach
 							</ul>
 						</div>
