@@ -139,6 +139,37 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('Вопросы возврата денежных средств рассматриваются по обращению Пользователя');
     }
 
+    public function test_indexable_pages_have_self_referencing_canonical_and_index_directive(): void
+    {
+        config()->set('app.url', 'https://cropkeeper.me');
+
+        foreach (['/', '/agreement', '/offer', '/personal-data', '/cookies'] as $path) {
+            $response = $this->get($path.'?utm_source=test');
+
+            $response
+                ->assertOk()
+                ->assertSee('<meta name="robots" content="index, follow">', false)
+                ->assertSee('<link rel="canonical" href="https://cropkeeper.me'.$path.'">', false);
+        }
+    }
+
+    public function test_legal_archives_are_noindex_but_remain_followable(): void
+    {
+        config()->set('app.url', 'https://cropkeeper.me');
+
+        foreach ([
+            '/legal/offer/archive',
+            '/legal/offer/archive/2026-09-05',
+            '/legal/personal-data/archive',
+            '/legal/personal-data/archive/2026-09-05',
+        ] as $path) {
+            $this->get($path)
+                ->assertOk()
+                ->assertSee('<meta name="robots" content="noindex, follow">', false)
+                ->assertSee('<link rel="canonical" href="https://cropkeeper.me'.$path.'">', false);
+        }
+    }
+
     public function test_legacy_privacy_url_redirects_to_canonical_personal_data_policy(): void
     {
         $this->get('/privacy')
