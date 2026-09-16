@@ -10,10 +10,10 @@ class FaviconAssetsTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('<link rel="icon" href="http://localhost/favicon.svg" type="image/svg+xml">', false)
-            ->assertSee('<link rel="icon" href="http://localhost/favicon.ico" sizes="any">', false)
-            ->assertSee('<link rel="icon" href="http://localhost/favicon-32x32.png" type="image/png" sizes="32x32">', false)
-            ->assertSee('<link rel="apple-touch-icon" href="http://localhost/apple-touch-icon.png" sizes="180x180">', false);
+            ->assertSee('<link rel="icon" href="'.config('app.url').'/favicon.svg" type="image/svg+xml">', false)
+            ->assertSee('<link rel="icon" href="'.config('app.url').'/favicon.ico" sizes="any">', false)
+            ->assertSee('<link rel="icon" href="'.config('app.url').'/favicon-32x32.png" type="image/png" sizes="32x32">', false)
+            ->assertSee('<link rel="apple-touch-icon" href="'.config('app.url').'/apple-touch-icon.png" sizes="180x180">', false);
 
         foreach (['favicon.svg', 'favicon.ico', 'favicon-32x32.png', 'apple-touch-icon.png'] as $asset) {
             $path = public_path($asset);
