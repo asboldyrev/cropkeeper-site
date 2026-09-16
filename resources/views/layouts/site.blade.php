@@ -18,6 +18,10 @@
     @endif
     <meta name="robots" content="{{ $robotsDirective }}">
     <link rel="canonical" href="{{ $canonicalUrl }}">
+    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" href="{{ asset('favicon-32x32.png') }}" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}" sizes="180x180">
     <title>@yield('title', 'Cropkeeper — порядок в огородном сезоне')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
