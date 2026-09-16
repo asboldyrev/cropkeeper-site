@@ -170,6 +170,34 @@ class PublicPagesTest extends TestCase
         }
     }
 
+    public function test_sitemap_contains_only_canonical_indexable_public_pages(): void
+    {
+        config()->set('app.url', 'https://cropkeeper.me');
+
+        $response = $this->get('/sitemap.xml');
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/xml; charset=UTF-8')
+            ->assertSee('<loc>https://cropkeeper.me/</loc>', false)
+            ->assertSee('<loc>https://cropkeeper.me/agreement</loc>', false)
+            ->assertSee('<loc>https://cropkeeper.me/offer</loc>', false)
+            ->assertSee('<loc>https://cropkeeper.me/personal-data</loc>', false)
+            ->assertSee('<loc>https://cropkeeper.me/cookies</loc>', false)
+            ->assertDontSee('https://cropkeeper.me/privacy')
+            ->assertDontSee('/legal/');
+    }
+
+    public function test_robots_txt_allows_crawling_and_references_canonical_sitemap(): void
+    {
+        config()->set('app.url', 'https://cropkeeper.me');
+
+        $this->get('/robots.txt')
+            ->assertOk()
+            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+            ->assertSee("User-agent: *\nDisallow:\n\nSitemap: https://cropkeeper.me/sitemap.xml\n", false);
+    }
+
     public function test_legacy_privacy_url_redirects_to_canonical_personal_data_policy(): void
     {
         $this->get('/privacy')
