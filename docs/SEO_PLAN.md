@@ -2,54 +2,38 @@
 
 Last updated: 2026-09-16
 
-This document is the handoff source for SEO work in `asboldyrev/cropkeeper-site`. It records the audit conclusions, agreed implementation decisions, order of work, and acceptance criteria so the work can be resumed from a new chat without reconstructing context from conversation history.
+This document is the canonical handoff source for SEO work in `asboldyrev/cropkeeper-site`. The implementation phase is complete in `dev`; the remaining SEO work is production acceptance and post-launch monitoring.
 
-The implementation target is the current `dev` line. SEO changes must be developed in a feature branch and reviewed before integration into `dev`. Do not promote `dev` to `main` merely because the SEO work is complete; the existing legal, commercial, security, privacy, license, and production-onboarding gates still apply.
+Do not promote `dev` to `main` merely because the SEO implementation is complete. Legal, commercial, privacy/security, license, application-integration, seller-data and merchant-onboarding gates still apply.
 
-## 1. Current SEO baseline
+## 1. Current SEO state
 
-The site is a server-rendered Laravel/Blade public landing with the following relevant properties already present:
+The current `dev` line now includes:
 
-- `/` is the public landing page;
-- canonical public legal pages exist at `/agreement`, `/offer`, `/personal-data`, `/cookies`;
-- `/privacy` permanently redirects to `/personal-data`;
-- immutable public legal archive routes exist under `/legal/{document}/archive` and `/legal/{document}/archive/{revision}`;
-- `<html lang="ru">` is present;
-- viewport, page title, and meta description are present;
-- the landing has one primary H1 and a logical H2/H3 structure;
-- the main content is rendered server-side and does not depend on client-side JavaScript for discovery;
-- navigation and legal links are ordinary HTML links;
-- trailing slashes for non-directory URLs are normalized with a permanent redirect;
-- `robots.txt` currently allows crawling but does not reference a sitemap;
-- there is currently no `sitemap.xml`;
-- there is currently no `rel="canonical"` output;
-- Open Graph/Twitter metadata are not implemented;
-- structured data / JSON-LD are not implemented;
-- the current `public/favicon.ico` is empty;
-- the hero application screenshot is `public/images/app.png` and is currently rendered with an empty `alt`;
-- no international/multilingual URL structure exists; the site is Russian-only for now.
+- server-rendered Laravel/Blade landing and legal pages;
+- canonical active public pages at `/`, `/agreement`, `/offer`, `/personal-data`, `/cookies`;
+- permanent `/privacy` → `/personal-data` redirect;
+- public legal archives with `noindex, follow`;
+- absolute self-referencing canonical URLs for indexable pages;
+- canonical URLs that ignore query/UTM parameters;
+- `/sitemap.xml` containing only canonical indexable pages;
+- static `public/robots.txt` allowing crawling and referencing `https://cropkeeper.me/sitemap.xml`;
+- shared title, description, robots, canonical, Open Graph and Twitter metadata;
+- landing-only `meta keywords` as a small Yandex-oriented supplemental signal;
+- Open Graph/Twitter image based on `public/images/app.png`;
+- Cropkeeper favicon set: SVG, ICO, PNG and Apple Touch Icon;
+- landing JSON-LD with `WebSite` and `SoftwareApplication`;
+- no invented rating/review/install/price structured data;
+- meaningful hero screenshot alt text and high fetch priority;
+- SEO regression tests covering canonical/indexation, sitemap/robots, social metadata, structured data, favicon assets, homepage metadata and hero image behavior.
 
-## 2. Search goals and scope
+The site remains Russian-only. International SEO is intentionally out of scope until a real second-language version exists.
 
-The immediate goal is to make the existing landing technically correct and clear for Google and Yandex before expanding into additional SEO/content pages.
+## 2. Indexation and canonical policy
 
-Work order follows this priority:
+### Indexable
 
-1. crawlability and indexation;
-2. canonical URL signals and sitemap;
-3. search/social metadata and favicon;
-4. structured data;
-5. keyword research and targeted on-page adjustments;
-6. automated regression coverage;
-7. production validation in search-engine tools and performance tooling.
-
-Do not create a blog, programmatic SEO pages, or large blocks of text written only for search engines as part of this phase.
-
-## 3. Indexation and canonical policy
-
-### 3.1 Indexable pages
-
-The following active pages should be indexable and should use self-referencing canonical URLs:
+The following pages are intended to be indexed and use self-referencing absolute canonical URLs:
 
 - `/`;
 - `/agreement`;
@@ -57,303 +41,210 @@ The following active pages should be indexable and should use self-referencing c
 - `/personal-data`;
 - `/cookies`.
 
-Canonical URLs must be absolute production URLs using the production scheme and host.
+Canonical base host is controlled through `APP_URL`; production must therefore use the production HTTPS origin.
 
-### 3.2 Redirect URL
+### Redirect
 
-`/privacy` remains a permanent redirect to `/personal-data` and must not appear in the sitemap.
+`/privacy` permanently redirects to `/personal-data` and is excluded from the sitemap.
 
-### 3.3 Legal archives
+### Legal archives
 
-Legal archives must remain publicly accessible for legal transparency, but they are not intended as search landing pages.
+Legal archive indexes and revisions remain public for transparency but are not search landing pages:
 
-Target policy:
+- `/legal/{document}/archive` → `noindex, follow`;
+- `/legal/{document}/archive/{revision}` → `noindex, follow`;
+- archive URLs are excluded from the sitemap.
 
-- `/legal/{document}/archive`: `noindex, follow`;
-- `/legal/{document}/archive/{revision}`: `noindex, follow`;
-- archive URLs must not appear in the sitemap;
-- archived content must remain accessible without authentication;
-- the active canonical legal documents remain indexable.
+Do not make archive pages private merely to keep them out of search.
 
-This avoids building a growing index of near-duplicate historical legal revisions while preserving public access and link traversal.
+## 3. Sitemap and robots
 
-## 4. Sitemap and robots.txt
+`/sitemap.xml` is application-owned and currently contains only:
 
-Add an application-owned `/sitemap.xml` instead of maintaining a hand-written static list.
+- `/`;
+- `/agreement`;
+- `/offer`;
+- `/personal-data`;
+- `/cookies`.
 
-The sitemap should contain only canonical, indexable public URLs from section 3.1. It should not contain redirects, legal archive pages, or non-canonical variants.
+It intentionally omits redirects and legal archives.
 
-`public/robots.txt` should continue to allow crawling and add an absolute sitemap reference, conceptually:
+`robots.txt` is static in `public/` because the production nginx configuration serves `robots.txt` as a static asset instead of passing it to Laravel. It currently allows crawling and references the production sitemap URL.
 
-```text
-User-agent: *
-Disallow:
+If the production host changes, update both `APP_URL` and the static sitemap reference in `public/robots.txt` so they remain consistent.
 
-Sitemap: https://cropkeeper.me/sitemap.xml
-```
+## 4. Shared metadata architecture
 
-The actual production host should come from the application's canonical URL configuration rather than being duplicated inconsistently across templates where practical.
+`resources/views/layouts/site.blade.php` now centralizes:
 
-## 5. Shared SEO metadata architecture
-
-Extend the shared site layout so pages can provide SEO values without duplicating raw head markup.
-
-The layout should support, at minimum:
-
-- page title;
+- title;
 - meta description;
-- optional meta keywords;
-- canonical URL;
+- optional keywords;
 - robots directive;
-- Open Graph title;
-- Open Graph description;
-- Open Graph URL;
-- Open Graph type;
-- Open Graph image;
-- Twitter card metadata;
-- optional page-specific structured data.
+- canonical URL;
+- Open Graph metadata;
+- Twitter metadata;
+- favicon/touch-icon links;
+- landing structured data.
 
-Defaults should be safe, but indexation/canonical behavior must be explicit for special pages such as legal archives.
+Special pages can override indexation/canonical behavior through view data where necessary.
 
-## 6. Meta keywords decision
+## 5. Homepage semantic targeting
 
-`meta name="keywords"` is not used by Google for ranking, but Yandex still documents it as a possible relevance signal. Therefore Cropkeeper will support it as a small Yandex-specific supplemental signal, not as a primary SEO mechanism.
+The current homepage target was selected after reviewing live search-result intent.
 
-Rules:
+Primary topic:
 
-- make `keywords` optional in the shared layout;
-- use it primarily on the landing page where it has a clear semantic purpose;
-- do not add long lists of synonyms or repeated phrases;
-- do not use it as a substitute for clear visible copy, title, H1, and description;
-- legal pages do not need keywords unless a concrete future reason appears.
+- `приложение для огородника`.
 
-Final landing keywords must be selected after keyword research. Preliminary semantic groups to investigate include:
+Secondary semantic support:
 
-- приложение для огородника;
-- планировщик огорода;
-- календарь огородника / календарь садовода;
-- журнал / дневник огородника;
-- учёт растений / посадок;
-- учёт семян;
-- планирование посадок.
+- `дневник огородника`;
+- `журнал огородника`;
+- `учет растений`;
+- `учет семян`;
+- `планирование огородного сезона`.
 
-These are research candidates, not the final approved keyword list.
+Current homepage metadata:
 
-## 7. Open Graph and social preview
+- title: `Cropkeeper — приложение для огородника и дневник сезона`;
+- description: `Cropkeeper — приложение для огородника: ведите растения и посадки, семена, задачи, календарь и журнал наблюдений в одном месте.`;
+- concise landing-only `meta keywords` matching the semantic groups above.
 
-Add Open Graph and Twitter metadata for indexable pages.
+Important intent exclusions:
 
-Required baseline:
+- do not make `планировщик огорода` the primary topic while the product does not yet provide garden-bed/site planning;
+- do not make `календарь огородника` the primary topic while users commonly expect ready-made planting/lunar recommendations rather than a personal event/task calendar.
 
-- `og:site_name`;
-- `og:type`;
-- `og:title`;
-- `og:description`;
-- `og:url`;
-- `og:image`;
-- `twitter:card`.
+The current H1 and hero copy were intentionally kept natural instead of forcing an exact-match keyword into visible copy.
 
-For the first implementation, `public/images/app.png` may be used as the OG image so social previews have an image immediately.
+Exact Yandex Wordstat volume was not available publicly during research; no search-volume numbers were invented. Refine targeting later from Search Console / Yandex Webmaster query data.
 
-This is an interim choice. A dedicated 1200x630 social card with Cropkeeper branding and interface context can be created later. Lack of a dedicated card is not a blocker for the current SEO phase.
+## 6. Structured data
 
-## 8. Favicons and application logo assets
-
-The current `public/favicon.ico` is an empty file and must be replaced.
-
-The user has supplied Cropkeeper logo assets taken from the application (`logo.svg` and `logo.png`). During implementation, either use the supplied files directly if they are available in the working environment or prepare the expected public paths so the user can add the final files without changing markup.
-
-Target favicon set:
-
-- SVG favicon as the preferred modern icon;
-- non-empty `favicon.ico` for compatibility;
-- PNG favicon fallback(s) where useful;
-- Apple Touch Icon;
-- corresponding `<link>` tags in the shared layout.
-
-Do not invent a different brand mark for the site.
-
-## 9. Structured data
-
-Add JSON-LD to the landing after the metadata/canonical foundation is in place.
-
-Initial target entities:
+The landing emits JSON-LD for:
 
 - `WebSite`;
-- `SoftwareApplication`;
-- `Organization` only to the extent that public seller/brand details support it.
+- `SoftwareApplication`.
 
-Rules:
+Supported fields include Cropkeeper name, canonical URL, page description, Russian language, web operating system and application category.
 
-- structured data must describe information that is actually visible/true on the site;
-- do not invent ratings, reviews, awards, install counts, or other unsupported properties;
-- paid `Offer` data should only be added when production checkout variants and prices are frozen and match the landing exactly;
-- do not expose empty production-only seller/contact fields in JSON-LD;
-- validate rendered JSON-LD with Google Rich Results Test / Schema Validator rather than assuming static source inspection is sufficient.
+Currently excluded intentionally:
 
-## 10. Landing content and keyword targeting
+- `Organization` unless public seller/brand facts justify it;
+- paid `Offer` data until production checkout values are frozen and exactly reconciled;
+- ratings, reviews, awards, install counts or other unsupported claims.
 
-The updated roadmap block materially improves the landing's semantic coverage. It now exposes server-rendered, user-facing descriptions for currently available functionality including:
+After production deployment, validate the rendered page with structured-data validators. Do not assume source-code inspection alone proves crawler-visible validity.
 
-- plants and planting history;
-- seed collection;
-- care tasks;
-- gardener calendar;
-- observation journal;
-- weather context.
+## 7. Images and social preview
 
-The development roadmap also naturally mentions future concepts such as shared garden access, care recommendations, garden map, crop rotation, statistics, weather history, knowledge base, photo diary, smart assistant, and lunar calendar.
+`public/images/app.png` currently serves two roles:
 
-Because these are meaningful product descriptions rather than keyword filler, they provide useful topical depth. Therefore the current SEO phase must not add a separate artificial "SEO text" section merely to increase keyword density.
+- landing hero screenshot;
+- initial Open Graph / Twitter social image.
 
-The visible roadmap introduction may be edited for natural Russian wording where useful, but this is a copy-quality refinement, not a requirement to increase keyword count.
+Hero image behavior:
 
-### 10.1 Keyword research before final copy changes
+- meaningful alt: `Интерфейс Cropkeeper с данными огородного сезона`;
+- `fetchpriority="high"` because the hero image may participate in LCP;
+- `decoding="async"`.
 
-Before finalizing the landing's main query target:
+A dedicated 1200×630 branded social card remains optional future work, not a release blocker.
 
-1. review Yandex Wordstat for candidate query groups;
-2. inspect current Google and Yandex result pages for those queries;
-3. determine whether the dominant search intent is software/app, informational article, planting calendar, or another format;
-4. after production/search-console data exists, use Google Search Console and Yandex Webmaster query data to refine the decision;
-5. map one primary topic and a small set of secondary topics to the homepage.
+The PNG dimensions were not hard-coded because they were not reliably confirmed during repository-only work. If future performance work confirms dimensions, adding explicit `width`/`height` is reasonable to reduce layout uncertainty.
 
-### 10.2 Targeted copy changes only
+## 8. Favicons
 
-After research, adjust only what is needed:
+The previous empty `public/favicon.ico` has been replaced. Current public assets include:
 
-- `<title>`;
-- H1;
-- meta description;
-- first visible paragraph/hero copy;
-- optional `keywords` metadata;
-- selected H2/H3 wording if it materially improves clarity.
+- `favicon.svg`;
+- `favicon.ico`;
+- `favicon-32x32.png`;
+- `apple-touch-icon.png`.
 
-Do not rewrite the whole landing if current copy already communicates the product naturally.
+The shared layout references all of them. Do not replace the Cropkeeper mark with an unrelated site-specific logo.
 
-## 11. Image SEO and accessibility
+## 9. Automated regression coverage
 
-Review the hero screenshot:
+SEO coverage is distributed across feature tests and currently verifies the important observable contracts, including:
 
-```html
-<img src=".../images/app.png" alt="">
-```
+- public indexable pages;
+- absolute self-canonicals;
+- query parameters excluded from canonical URLs;
+- active pages `index, follow`;
+- legal archives `noindex, follow`;
+- sitemap XML content and exclusions;
+- robots sitemap reference;
+- social metadata;
+- landing JSON-LD;
+- absence of unsupported structured pricing/ratings;
+- favicon links/assets;
+- homepage title/description/keywords;
+- hero image alt/loading attributes;
+- `/privacy` 301 redirect.
 
-If the image is treated as a meaningful demonstration of the Cropkeeper interface, give it a concise descriptive `alt`. If it is intentionally decorative and conveys no information beyond adjacent text, an empty `alt` is correct. Decide this explicitly rather than changing it only to satisfy an SEO checklist.
-
-Continue to keep image assets reasonably compressed and avoid adding heavy social/branding images to the critical rendering path unnecessarily.
-
-## 12. International SEO
-
-International SEO is out of scope for the current phase.
-
-The site currently has one Russian-language version, so do not add:
-
-- hreflang;
-- `x-default`;
-- locale URL prefixes;
-- multilingual sitemaps.
-
-If another real language version is introduced later, revisit URL strategy, self-canonicals, reciprocal hreflang, `x-default`, and localized content as a separate project.
-
-## 13. Core Web Vitals and performance
-
-Repository inspection alone is insufficient to claim that production Core Web Vitals pass or fail.
-
-Production acceptance should target:
-
-- LCP below 2.5 seconds;
-- INP below 200 ms;
-- CLS below 0.1.
-
-After deployment, test mobile and desktop with PageSpeed Insights and use field data from Search Console when enough traffic/data exists.
-
-Pay particular attention to:
-
-- hero/LCP asset loading;
-- Vite JavaScript/CSS output;
-- font loading;
-- cache headers;
-- server response time;
-- unexpected layout shift.
-
-## 14. Automated regression coverage
-
-Add SEO-focused feature tests, either to `tests/Feature/PublicPagesTest.php` or a dedicated SEO feature test file.
-
-Coverage should include at least:
-
-- `/` returns 200;
-- indexable pages contain exactly one title;
-- indexable pages contain exactly one canonical link;
-- canonical URL matches the expected canonical production URL logic;
-- meta description exists;
-- landing Open Graph metadata exists;
-- landing JSON-LD exists once structured data is implemented;
-- `/sitemap.xml` returns valid XML;
-- sitemap contains only intended canonical/indexable URLs;
-- `/privacy` is absent from sitemap;
-- legal archive URLs are absent from sitemap;
-- robots.txt references the sitemap;
-- current legal documents are indexable;
-- legal archive pages output `noindex, follow`;
-- `/privacy` remains a permanent redirect to `/personal-data`;
-- favicon assets referenced by the layout are non-empty/available where practical to test.
-
-Run the normal project verification after implementation:
+Normal project verification remains:
 
 ```bash
+vendor/bin/pint --dirty --format agent
 composer test
 npm run build
 ```
 
-## 15. Production acceptance
+## 10. Production SEO acceptance — still pending
 
-After deploying an SEO-complete candidate, verify:
+This is now the first incomplete SEO checkpoint.
 
-- Google Search Console property and sitemap submission;
-- Yandex Webmaster property and sitemap submission;
-- URL inspection/indexability for the homepage and current legal pages;
-- rendered canonical URLs;
-- archive `noindex` behavior;
-- Google Rich Results Test for structured data;
-- Schema Validator as an additional JSON-LD validation step;
-- social preview behavior with the initial OG image;
-- favicon appearance/crawlability;
-- PageSpeed Insights mobile and desktop;
-- no accidental analytics/privacy regressions while changing the shared layout.
+After deploying an SEO-complete candidate to the production origin, verify all of the following:
 
-## 16. Implementation sequence
+1. `APP_URL` resolves to the final HTTPS production origin and rendered canonicals use it.
+2. `/`, `/agreement`, `/offer`, `/personal-data`, `/cookies` return 200 and are indexable.
+3. `/privacy` returns a permanent redirect to `/personal-data`.
+4. representative legal archive pages remain accessible and render `noindex, follow`.
+5. `/sitemap.xml` returns 200, valid XML and only intended canonical URLs.
+6. `/robots.txt` returns 200 and references the correct production sitemap.
+7. submit the sitemap in Google Search Console and monitor the Sitemaps/Page Indexing reports.
+8. inspect the homepage and active legal pages with Google URL Inspection; request indexing where appropriate.
+9. add/verify the site in Yandex Webmaster and submit the sitemap there; run Yandex's Sitemap validator.
+10. validate rendered JSON-LD using Google Rich Results Test and an additional schema validator.
+11. verify Open Graph/social preview behavior and favicon visibility from the public origin.
+12. run PageSpeed Insights on mobile and desktop.
+13. confirm no shared-layout SEO change caused analytics/privacy regressions: Yandex Metrika must still remain blocked until explicit consent.
 
-Implement in this order unless a concrete dependency requires otherwise:
+Core Web Vitals targets for production acceptance:
 
-1. shared SEO metadata architecture;
-2. canonical and robots/indexation policy;
-3. `/sitemap.xml` and robots.txt sitemap reference;
-4. favicon/logo markup and assets;
-5. Open Graph/Twitter metadata using `public/images/app.png` initially;
-6. optional landing `meta keywords` support;
-7. landing JSON-LD (`WebSite`, `SoftwareApplication`, supported organization data);
-8. hero image alt/accessibility decision;
-9. automated tests for all SEO invariants;
-10. keyword research;
-11. targeted title/H1/description/hero-copy refinements based on research;
-12. production Google/Yandex/schema/PageSpeed acceptance.
+- LCP < 2.5 s;
+- INP < 200 ms;
+- CLS < 0.1.
 
-## 17. Implementation constraints and handoff notes
+Repository inspection alone cannot close these items; production/runtime evidence is required.
 
-- Start implementation from the current `dev` branch through a feature branch.
-- `AGENTS.md` currently contains a Laravel Boost bootstrap instruction. Before application-code changes, follow that repository instruction in an environment where PHP/Composer and repository checkout are available, then reread the generated `AGENTS.md` before continuing.
-- Do not change legal meaning while editing SEO metadata or page titles/descriptions.
-- Do not make legal archive pages inaccessible merely because they are `noindex`.
-- Do not introduce paid structured-data prices until checkout/landing prices are frozen and reconciled.
-- Do not load Yandex Metrika before consent while changing `<head>` or shared layout behavior.
-- Do not add international SEO until a genuine second-language version exists.
-- Do not add extra keyword-heavy landing sections solely for ranking; the expanded roadmap already gives the page substantial natural topical coverage.
+## 11. Search-engine onboarding notes
 
-## 18. New-chat restart checklist
+For Google, submit the already-hosted sitemap through Search Console's Sitemaps report. URL Inspection is the correct tool for checking individual pages and requesting recrawl/indexing after deployment. Sitemap submission helps Google discover multiple URLs but does not guarantee indexing.
 
-When continuing this work in a new chat, start by reading, in this order:
+For Yandex, the sitemap may be advertised through the `Sitemap` directive in `robots.txt` and should also be added in Yandex Webmaster for monitoring. Use the Yandex Sitemap validator against the public URL after deployment.
+
+Do not mark these tasks complete merely because the files exist in the repository.
+
+## 12. Deferred SEO work
+
+Not required for the current release gate:
+
+- dedicated 1200×630 social card;
+- adding `Organization` JSON-LD once public seller/brand data justify it;
+- paid `Offer` structured data after checkout values are finalized;
+- explicit hero image dimensions after reliable asset measurement;
+- additional content/SEO landing pages based on real demand;
+- international SEO/hreflang;
+- ongoing query-based homepage refinements from Search Console/Yandex Webmaster.
+
+Do not add an artificial keyword-heavy SEO text block. The existing feature and roadmap content already provides natural topical depth.
+
+## 13. New-chat restart checklist
+
+When continuing SEO work in a new chat, read:
 
 1. `AGENTS.md`;
 2. `docs/PROJECT_STATUS.md`;
@@ -361,9 +252,8 @@ When continuing this work in a new chat, start by reading, in this order:
 4. `docs/ROADMAP.md`;
 5. `resources/views/layouts/site.blade.php`;
 6. `resources/views/landing.blade.php`;
-7. `config/landing.php`;
-8. `routes/web.php`;
-9. `public/robots.txt`;
-10. relevant feature tests.
+7. `routes/web.php`;
+8. `public/robots.txt`;
+9. SEO-related feature tests.
 
-Then compare the current branch with this plan and continue from the first incomplete item in section 16.
+Then continue from section 10 of this document. The technical implementation is complete; do not reimplement it unless a regression or changed requirement is identified.
