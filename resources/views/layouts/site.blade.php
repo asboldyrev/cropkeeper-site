@@ -13,6 +13,29 @@
         $keywords = trim($__env->yieldContent('keywords'));
         $socialImage = $seoImage ?? $canonicalBaseUrl . '/images/app.png';
         $openGraphType = $seoOpenGraphType ?? 'website';
+        $structuredData = request()->routeIs('home') ? [
+            '@context' => 'https://schema.org',
+            '@graph' => [
+                [
+                    '@type' => 'WebSite',
+                    '@id' => $canonicalBaseUrl . '/#website',
+                    'url' => $canonicalBaseUrl . '/',
+                    'name' => 'Cropkeeper',
+                    'description' => $pageDescription,
+                    'inLanguage' => 'ru-RU',
+                ],
+                [
+                    '@type' => 'SoftwareApplication',
+                    '@id' => $canonicalBaseUrl . '/#application',
+                    'name' => 'Cropkeeper',
+                    'url' => $canonicalBaseUrl . '/',
+                    'description' => $pageDescription,
+                    'applicationCategory' => 'LifestyleApplication',
+                    'operatingSystem' => 'Web',
+                    'inLanguage' => 'ru-RU',
+                ],
+            ],
+        ] : null;
     @endphp
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,6 +66,9 @@
     <link rel="icon" href="{{ asset('favicon-32x32.png') }}" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}" sizes="180x180">
     <title>{{ $pageTitle }}</title>
+    @if ($structuredData !== null)
+        <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
