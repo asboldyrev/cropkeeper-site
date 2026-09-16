@@ -83,8 +83,8 @@ class PublicPagesTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertDontSee('Связаться с Cropkeeper')
-            ->assertDontSee('footer-label">Связь', false)
-            ->assertDontSee('footer-label">Продавец', false);
+            ->assertDontSee('footer-label\">Связь', false)
+            ->assertDontSee('footer-label\">Продавец', false);
 
         $this->get('/agreement')->assertOk()->assertDontSee('11. Сведения о Правообладателе');
         $this->get('/offer')->assertOk()->assertDontSee('10. Сведения о Правообладателе / Исполнителе');
@@ -168,6 +168,35 @@ class PublicPagesTest extends TestCase
                 ->assertSee('<meta name="robots" content="noindex, follow">', false)
                 ->assertSee('<link rel="canonical" href="https://cropkeeper.me'.$path.'">', false);
         }
+    }
+
+    public function test_sitemap_contains_only_canonical_indexable_public_pages(): void
+    {
+        config()->set('app.url', 'https://cropkeeper.me');
+
+        $response = $this->get('/sitemap.xml');
+
+        $response
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/xml; charset=UTF-8')
+            ->assertSee('<loc>https://cropkeeper.me/</loc>', false)
+            ->assertSee('<loc>https://cropkeeper.me/agreement</loc>', false)
+            ->assertSee('<loc>https://cropkeeper.me/offer</loc>', false)
+            ->assertSee('<loc>https://cropkeeper.me/personal-data</loc>', false)
+            ->assertSee('<loc>https://cropkeeper.me/cookies</loc>', false)
+            ->assertDontSee('https://cropkeeper.me/privacy')
+            ->assertDontSee('/legal/');
+    }
+
+    public function test_static_robots_txt_allows_crawling_and_references_canonical_sitemap(): void
+    {
+        $robotsPath = public_path('robots.txt');
+
+        $this->assertFileExists($robotsPath);
+        $this->assertSame(
+            "User-agent: *\nDisallow:\n\nSitemap: https://cropkeeper.me/sitemap.xml\n",
+            file_get_contents($robotsPath),
+        );
     }
 
     public function test_legacy_privacy_url_redirects_to_canonical_personal_data_policy(): void

@@ -5,6 +5,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'landing')->name('home');
 
+Route::get('/sitemap.xml', function () {
+    $canonicalBaseUrl = rtrim((string) config('app.url'), '/');
+
+    return response()
+        ->view('sitemap', [
+            'urls' => [
+                $canonicalBaseUrl.'/',
+                $canonicalBaseUrl.'/agreement',
+                $canonicalBaseUrl.'/offer',
+                $canonicalBaseUrl.'/personal-data',
+                $canonicalBaseUrl.'/cookies',
+            ],
+        ], 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
+})->name('sitemap');
+
 Route::get('/agreement', [LegalDocumentController::class, 'agreement'])->name('agreement');
 Route::get('/offer', [LegalDocumentController::class, 'offer'])->name('offer');
 Route::get('/personal-data', [LegalDocumentController::class, 'personalData'])->name('personal-data');
