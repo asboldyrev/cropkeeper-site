@@ -1,14 +1,14 @@
 # Current project status
 
-Last updated: 2026-09-16
+Last updated: 2026-09-26
 
 ## Active stage
 
 The public Cropkeeper landing is implemented, published to production at `https://cropkeeper.me`, and accepted for the current release baseline.
 
-The landing-side legal, SEO, analytics/privacy, tariff presentation, security/privacy and open-source license checks are considered complete for this checkpoint. The remaining release work is cross-repository verification against the current `cropkeeper-app` implementation and any final application-owned behavior that must match the published site documents and commercial wording.
+The landing-side legal, SEO, analytics/privacy, tariff presentation, security/privacy and open-source license checks are complete for this checkpoint. Cross-repository verification against the current `cropkeeper-app` `dev` baseline is also complete for the public product presentation: the landing roadmap and tariff feature matrix have been reconciled with the post-release functionality published in application release 2026.9.1.
 
-`docs/SEO_PLAN.md` records the completed SEO implementation and the production PageSpeed baseline. `docs/ROADMAP.md` remains the release-sequence overview.
+The public product presentation now includes recurring tasks/events, seasonal recommendations, structured growing-condition information, plant condition assessment and the Premium lunar calendar. `docs/SEO_PLAN.md` records the completed SEO implementation and the production PageSpeed baseline. `docs/ROADMAP.md` remains the release-sequence overview.
 
 ## Current repository and production state
 

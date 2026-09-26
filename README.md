@@ -4,9 +4,9 @@ Public landing for `cropkeeper.me`. The site explains Cropkeeper, publishes tari
 
 ## Current status
 
-The first landing implementation, canonical legal-document architecture, final Offer / Personal Data Processing Policy revision, and consent-gated Yandex Metrika runtime have been completed and merged into `dev`.
+The public landing, canonical legal-document architecture, tariff/subscription presentation, consent-gated Yandex Metrika runtime, SEO baseline and current cross-repository application/site reconciliation have been completed and merged into `dev`.
 
-The active release stage is now **final commercial tariff/subscription presentation before production payment-provider onboarding**. Remaining work after this stage includes cross-repository legal-link/product-behavior synchronization and release security/license checks.
+The landing product presentation is maintained against the current `cropkeeper-app` release baseline. After application release 2026.9.1, the roadmap and tariff cards include recurring planning, recommendations, plant-condition assessment and the Premium lunar calendar.
 
 See:
 
