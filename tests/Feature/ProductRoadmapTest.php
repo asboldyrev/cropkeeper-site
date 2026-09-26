@@ -17,9 +17,15 @@ class ProductRoadmapTest extends TestCase
             ->assertSee('Календарь садовода')
             ->assertSee('Журнал наблюдений')
             ->assertSee('Погода для вашего огорода')
-            ->assertSee('В развитии')
-            ->assertSee('Рекомендации по уходу')
+            ->assertSee('Рекомендации по растениям')
+            ->assertSee('Условия выращивания')
             ->assertSee('Лунный календарь')
+            ->assertSeeInOrder([
+                'Уже доступно',
+                'Рекомендации по растениям',
+                'Лунный календарь',
+                'В развитии',
+            ])
             ->assertSee('Умный помощник')
             ->assertSee('Карта огорода')
             ->assertSee('Севооборот')
@@ -31,12 +37,24 @@ class ProductRoadmapTest extends TestCase
             ->assertSee('Совместный огород');
     }
 
+    public function test_tariff_cards_show_the_current_feature_matrix(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('базовые рекомендации')
+            ->assertSee('повторяющиеся события и задачи')
+            ->assertSee('оценка текущих условий растений')
+            ->assertSee('расширенные рекомендации')
+            ->assertSee('лунный календарь');
+    }
+
     public function test_roadmap_uses_lucide_icons_instead_of_emoji(): void
     {
         $this->get('/')
             ->assertOk()
             ->assertSee('data-lucide="sprout"', false)
             ->assertSee('data-lucide="lightbulb"', false)
+            ->assertSee('data-lucide="activity"', false)
             ->assertSee('data-lucide="moon"', false)
             ->assertSee('data-lucide="bot"', false)
             ->assertSee('data-lucide="map"', false)
