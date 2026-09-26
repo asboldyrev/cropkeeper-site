@@ -4,6 +4,7 @@ import '../css/tariffs.css';
 import {
     ArrowRight,
     ArrowUpRight,
+    Activity,
     BookOpen,
     BookOpenText,
     Bot,
@@ -37,6 +38,7 @@ createIcons({
     icons: {
         ArrowRight,
         ArrowUpRight,
+        Activity,
         BookOpen,
         BookOpenText,
         Bot,
