@@ -1,6 +1,6 @@
 # Cropkeeper Site roadmap
 
-Last updated: 2026-09-16
+Last updated: 2026-09-26
 
 This roadmap tracks the release sequence for `asboldyrev/cropkeeper-site`. Detailed legal requirements and acceptance criteria live in `docs/LEGAL_AUDIT_PLAN.md`. The current checkpoint lives in `docs/PROJECT_STATUS.md`. The completed SEO implementation and production baseline live in `docs/SEO_PLAN.md`.
 
@@ -119,9 +119,9 @@ International SEO remains deferred until a genuine second-language version exist
 
 ## 7. Canonical legal links and application integration
 
-Status: next active cross-repository verification stage.
+Status: completed for the current application/site baseline.
 
-Site side is considered complete for the current landing baseline. The remaining work is to inspect the current `asboldyrev/cropkeeper-app` `dev` and verify that application flows use the production site's canonical legal/commercial model.
+The current `asboldyrev/cropkeeper-app` `dev` baseline has been reconciled with the site's canonical legal/commercial model for the current release checkpoint.
 
 Check in the application:
 
@@ -135,7 +135,7 @@ Do not assume older roadmap items are still missing; verify the current applicat
 
 ## 8. Cross-repository product/legal behavior gate
 
-Status: open; this is the main remaining release gate.
+Status: completed for the current release baseline.
 
 Verify the current application behavior against the production site for:
 
@@ -155,7 +155,7 @@ Verify the current application behavior against the production site for:
 - service-email categories;
 - material document-change notifications and required confirmations.
 
-The goal is to identify only real remaining differences in the current `cropkeeper-app`, not to repeat already completed work.
+The current gate is closed. Reopen it only when application billing/legal behavior or the public tariff/product presentation materially changes.
 
 ## 9. Landing security and privacy acceptance
 
@@ -173,9 +173,9 @@ Dependency/license review is considered closed for the current site release. Re-
 
 ## 11. Final release / merchant / promotion flow
 
-Status: pending only on the remaining cross-repository application gate and normal final release verification.
+Status: current landing baseline is released; future promotions remain post-release work.
 
-The landing itself is already published to production and accepted for the current baseline. After stages 7–8 are green:
+The landing is published to production and accepted for the current baseline. For later releases:
 
 - perform final application/site smoke verification;
 - confirm no last-minute legal/commercial divergence exists;
